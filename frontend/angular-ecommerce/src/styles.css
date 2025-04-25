@@ -1034,4 +1034,8 @@ footer ul li{
         border:0;
         padding:8px 0
     }
+    .active-link{
+        font-weight:500;
+        color:#0da8e4
+    }
 }

@@ -40,6 +40,7 @@
               "src/styles.css",
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "node_modules/@fortawesome/fontawesome-free/css/all.min.css"
+              
             ],
             "scripts": [],
             "server": "src/main.server.ts",
@@ -103,11 +104,15 @@
             ],
             "styles": [
               "src/styles.css"
+              
             ],
             "scripts": []
           }
         }
       }
     }
+  },
+  "cli": {
+    "analytics": "5b19459d-d4cc-4a06-a0f1-673bfb7398e0"
   }
 }
