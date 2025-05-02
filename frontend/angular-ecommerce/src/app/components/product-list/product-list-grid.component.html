@@ -4,8 +4,13 @@
                         <div class="row">
                                 <div *ngFor="let TempProduct of products" class="col-md-3">
                                         <div class="product-box">
+                                                <a routerLink="/products/{{TempProduct.id}}">
                                                 <img src="{{TempProduct.imageUrl}}" alt="product" class="img-responsive">
+                                                </a>
+                                                <a routerLink="/products/{{TempProduct.id}}">
                                                 <h1>{{TempProduct.name}}</h1>
+                                                </a>
+                                                
                                                 <div class="price">{{ TempProduct.unitPrice | currency:'USD' }}</div>
                                                 <a href="#" class="btn btn-primary">Buy Now</a>
                                         </div>
