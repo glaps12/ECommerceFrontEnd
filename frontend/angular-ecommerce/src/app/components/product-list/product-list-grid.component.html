@@ -1,45 +1,60 @@
 <div class="main-content">
         <div class="section-content section-content-p30">
                 <div class="container-fluid">
-                        <div class="row">
-                                <div *ngFor="let TempProduct of products" class="col-md-3">
-                                        <div class="product-box">
+                        <div class="row g-3">
+                                <div *ngFor="let TempProduct of products" class="col-12 col-sm-6 col-md-4 col-lg-3">
+                                        <div class="product-box h-100">
                                                 <a routerLink="/products/{{TempProduct.id}}">
-                                                <img src="{{TempProduct.imageUrl}}" alt="product" class="img-responsive">
+                                                <img src="{{TempProduct.imageUrl}}" alt="product" class="img-fluid">
                                                 </a>
                                                 <a routerLink="/products/{{TempProduct.id}}">
                                                 <h1>{{TempProduct.name}}</h1>
                                                 </a>
                                                 
                                                 <div class="price">{{ TempProduct.unitPrice | currency:'USD' }}</div>
-                                                <a href="#" class="btn btn-primary">Buy Now</a>
+                                                <button type="button" class="btn btn-primary" (click)="addToCart(TempProduct)">Add to cart</button>
                                         </div>
 
                                         
                                 </div>
 
-                                <div *ngIf="products?.length == 0" class="alert alert-warning col-md-12" role="alert">
+                                <div *ngIf="products?.length == 0" class="alert alert-warning col-12" role="alert">
                                         No products found.
                                 </div>
                         </div>
                         
-                        <div class="pagination-container">
-                                <div class="row">
-                                        <div class="col-md-6"></div>
-                                        <div class="col-md-6">
-                                                <div class="row">
-                                                        <div class="col-md-9" style="padding-left: 30%;">
-                                                                <ngb-pagination 
-                                                                        [collectionSize]="theTotalElements"
-                                                                        [(page)]="thePageNumber"
-                                                                        [pageSize]="thePageSize"
-                                                                       (pageChange)="listProducts()">       
-                                                                </ngb-pagination>
-                                                        </div>
+                        <div class="pagination-container mt-3">
+                                <div class="row align-items-center g-2">
+                                        <div class="col-12 col-md-6">
+                                                <div class="items">
+                                                        <label for="pageSize" class="me-2">Page size:</label>
+                                                        <select id="pageSize" class="form-select d-inline-block"
+                                                                [ngModel]="thePageSize"
+                                                                (ngModelChange)="onPageSizeChange($event)">
+                                                                <option [ngValue]="5">5</option>
+                                                                <option [ngValue]="10">10</option>
+                                                                <option [ngValue]="15">15</option>
+                                                                <option [ngValue]="20">20</option>
+                                                                <option [ngValue]="50">50</option>
+                                                        </select>
                                                 </div>
+                                        </div>
+                                        <div class="col-12 col-md-6 d-flex justify-content-center justify-content-md-end">
+                                                <ngb-pagination 
+                                                        [collectionSize]="theTotalElements"
+                                                        [(page)]="thePageNumber"
+                                                        [pageSize]="thePageSize"
+                                                        [maxSize]="5"
+                                                        [ellipses]="true"
+                                                        [rotate]="true"
+                                                        [boundaryLinks]="true"
+                                                       (pageChange)="listProducts()">       
+                                                </ngb-pagination>
                                         </div>
                                 </div>
                         </div>
+
+
                 </div>
         </div>
 </div>

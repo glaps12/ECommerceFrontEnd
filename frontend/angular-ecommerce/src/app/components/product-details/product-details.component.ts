@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { Product } from '../../common/product';
 import { ActivatedRoute } from '@angular/router';
 import { ProductService } from '../../services/product.service';
+import { CartService } from '../../services/cart.service';
 
 @Component({
   selector: 'app-product-details',
@@ -12,7 +13,7 @@ export class ProductDetailsComponent {
 
   product!: Product;
   
-  constructor(private productService: ProductService , private route: ActivatedRoute  ) {
+  constructor(private productService: ProductService , private route: ActivatedRoute, private cartService: CartService  ) {
 
     
   };
@@ -33,7 +34,9 @@ export class ProductDetailsComponent {
 
   }
 
-   
+  addToCart(product: Product) {
+    this.cartService.addToCart(product);
+  }
 
 
 

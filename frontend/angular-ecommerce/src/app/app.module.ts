@@ -11,6 +11,9 @@ import { ProductCategoryMenuComponent } from './components/product-category-menu
 import { SearchComponent } from './components/search/search.component';
 import { ProductDetailsComponent } from './components/product-details/product-details.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { FormsModule } from '@angular/forms';
+import { CartStatusComponent } from './components/cart-status/cart-status.component';
+import { CartDetailsComponent } from './components/cart-details/cart-details.component';
 
 const routes: Routes = [
   {path: 'search/:keyword', component: ProductListComponent},
@@ -18,6 +21,7 @@ const routes: Routes = [
   {path: 'category/', component: ProductListComponent},
   {path: 'products', component: ProductListComponent},
   {path: 'products/:id', component: ProductDetailsComponent},
+  {path: 'cart', component: CartDetailsComponent},
   {path: '', redirectTo: '/products', pathMatch: 'full'},
   {path: "**", redirectTo: '/products', pathMatch: 'full'}
 ];
@@ -28,13 +32,16 @@ const routes: Routes = [
     ProductListComponent,
     ProductCategoryMenuComponent,
     SearchComponent,
-    ProductDetailsComponent
+    ProductDetailsComponent,
+    CartStatusComponent,
+    CartDetailsComponent
   ],
   imports: [
     RouterModule.forRoot(routes),
     BrowserModule,
     AppRoutingModule,
-    NgbModule
+    NgbModule,
+    FormsModule
   ],
   providers: [
     provideClientHydration(),

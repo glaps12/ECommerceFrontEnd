@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { ProductService } from '../../services/product.service';
 import { Product } from '../../common/product';
 import { ActivatedRoute } from '@angular/router';
+import { CartService } from '../../services/cart.service';
 
 
 @Component({
@@ -19,10 +20,10 @@ export class ProductListComponent {
   
 
  thePageNumber: number = 1;
- thePageSize: number = 5;
+ thePageSize: number = 10;
  theTotalElements: number = 0;
 
-  constructor(private productService: ProductService, private route : ActivatedRoute) { }
+  constructor(private productService: ProductService, private route : ActivatedRoute, private cartService: CartService) { }
 
   ngOnInit() : void {
     this.route.paramMap.subscribe(() => {
@@ -39,6 +40,16 @@ export class ProductListComponent {
   }
 
 }
+
+  onPageSizeChange(newSize: number) {
+    this.thePageSize = Number(newSize);
+    this.thePageNumber = 1;
+    this.listProducts();
+  }
+
+  addToCart(product: Product) {
+    this.cartService.addToCart(product);
+  }
   handleSearchProducts() {
     
     const keyword: string = this.route.snapshot.paramMap.get('keyword')!;
