@@ -1,60 +1,70 @@
-<div class="main-content">
-        <div class="section-content section-content-p30">
-                <div class="container-fluid">
-                        <div class="row g-3">
-                                <div *ngFor="let TempProduct of products" class="col-12 col-sm-6 col-md-4 col-lg-3">
-                                        <div class="product-box h-100">
-                                                <a routerLink="/products/{{TempProduct.id}}">
-                                                <img src="{{TempProduct.imageUrl}}" alt="product" class="img-fluid">
-                                                </a>
-                                                <a routerLink="/products/{{TempProduct.id}}">
-                                                <h1>{{TempProduct.name}}</h1>
-                                                </a>
-                                                
-                                                <div class="price">{{ TempProduct.unitPrice | currency:'USD' }}</div>
-                                                <button type="button" class="btn btn-primary" (click)="addToCart(TempProduct)">Add to cart</button>
-                                        </div>
+<div class="product-list-page">
+  <div class="product-grid">
+    <div *ngFor="let p of products" class="product-card-wrap">
+      <mat-card class="product-card" appearance="outlined">
+        <a [routerLink]="['/products', p.id]" class="card-image-link">
+          <div class="card-image-container">
+            <img [src]="p.imageUrl" [alt]="p.name" loading="lazy" class="card-image" />
+          </div>
+        </a>
+        <mat-card-content class="card-body">
+          <a [routerLink]="['/products', p.id]" class="card-title-link">
+            <h3 class="card-title">{{ p.name }}</h3>
+          </a>
+          <div class="card-meta">
+            <span class="card-price">{{ p.unitPrice | currency: "USD" }}</span>
+            <span class="card-stock" *ngIf="p.unitsInStock > 0">In Stock</span>
+            <span class="card-stock out" *ngIf="p.unitsInStock === 0">Out of Stock</span>
+          </div>
+        </mat-card-content>
+        <mat-card-actions class="card-actions">
+          <button mat-flat-button color="primary" type="button" (click)="addToCart(p)" class="add-cart-btn">
+            <mat-icon>add_shopping_cart</mat-icon>
+            Add to cart
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+  </div>
 
-                                        
-                                </div>
+  <p *ngIf="products.length === 0" class="empty-hint" role="status">
+    <mat-icon class="empty-icon">inventory_2</mat-icon>
+    No products found.
+  </p>
 
-                                <div *ngIf="products?.length == 0" class="alert alert-warning col-12" role="alert">
-                                        No products found.
-                                </div>
-                        </div>
-                        
-                        <div class="pagination-container mt-3">
-                                <div class="row align-items-center g-2">
-                                        <div class="col-12 col-md-6">
-                                                <div class="items">
-                                                        <label for="pageSize" class="me-2">Page size:</label>
-                                                        <select id="pageSize" class="form-select d-inline-block"
-                                                                [ngModel]="thePageSize"
-                                                                (ngModelChange)="onPageSizeChange($event)">
-                                                                <option [ngValue]="5">5</option>
-                                                                <option [ngValue]="10">10</option>
-                                                                <option [ngValue]="15">15</option>
-                                                                <option [ngValue]="20">20</option>
-                                                                <option [ngValue]="50">50</option>
-                                                        </select>
-                                                </div>
-                                        </div>
-                                        <div class="col-12 col-md-6 d-flex justify-content-center justify-content-md-end">
-                                                <ngb-pagination 
-                                                        [collectionSize]="theTotalElements"
-                                                        [(page)]="thePageNumber"
-                                                        [pageSize]="thePageSize"
-                                                        [maxSize]="5"
-                                                        [ellipses]="true"
-                                                        [rotate]="true"
-                                                        [boundaryLinks]="true"
-                                                       (pageChange)="listProducts()">       
-                                                </ngb-pagination>
-                                        </div>
-                                </div>
-                        </div>
+  <!-- Custom pagination bar (avoids CDK overlay issues with mat-paginator select) -->
+  <div class="custom-paginator" *ngIf="theTotalElements > 0">
+    <div class="page-size-group">
+      <span class="page-size-label">Show:</span>
+      <button
+        *ngFor="let size of [5, 10, 15, 20, 50]"
+        mat-button
+        type="button"
+        class="page-size-btn"
+        [class.active]="thePageSize === size"
+        (click)="onPageSizeChange(size)">
+        {{ size }}
+      </button>
+    </div>
 
+    <span class="page-info">
+      {{ (thePageNumber - 1) * thePageSize + 1 }}–{{ thePageNumber * thePageSize > theTotalElements ? theTotalElements : thePageNumber * thePageSize }}
+      of {{ theTotalElements }}
+    </span>
 
-                </div>
-        </div>
+    <div class="page-nav-group">
+      <button mat-icon-button type="button" [disabled]="thePageNumber === 1" (click)="goToPage(1)" aria-label="First page">
+        <mat-icon>first_page</mat-icon>
+      </button>
+      <button mat-icon-button type="button" [disabled]="thePageNumber === 1" (click)="goToPage(thePageNumber - 1)" aria-label="Previous page">
+        <mat-icon>chevron_left</mat-icon>
+      </button>
+      <button mat-icon-button type="button" [disabled]="thePageNumber * thePageSize >= theTotalElements" (click)="goToPage(thePageNumber + 1)" aria-label="Next page">
+        <mat-icon>chevron_right</mat-icon>
+      </button>
+      <button mat-icon-button type="button" [disabled]="thePageNumber * thePageSize >= theTotalElements" (click)="goToPage(lastPage)" aria-label="Last page">
+        <mat-icon>last_page</mat-icon>
+      </button>
+    </div>
+  </div>
 </div>

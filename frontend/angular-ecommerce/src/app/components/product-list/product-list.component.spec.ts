@@ -1,23 +1,48 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
+import { ActivatedRoute, convertToParamMap } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
+import { of } from 'rxjs';
 import { ProductListComponent } from './product-list.component';
+import { ProductService } from '../../services/product.service';
+import { CartService } from '../../services/cart.service';
+import { SharedMaterialModule } from '../../shared-material.module';
 
 describe('ProductListComponent', () => {
-  let component: ProductListComponent;
   let fixture: ComponentFixture<ProductListComponent>;
 
   beforeEach(async () => {
+    const emptyPage = {
+      _embedded: { products: [] },
+      page: { size: 10, totalElements: 0, totalPages: 0, number: 0 },
+    };
     await TestBed.configureTestingModule({
-      declarations: [ProductListComponent]
-    })
-    .compileComponents();
+      imports: [RouterTestingModule, SharedMaterialModule],
+      declarations: [ProductListComponent],
+      providers: [
+        provideNoopAnimations(),
+        CartService,
+        {
+          provide: ProductService,
+          useValue: {
+            getProductListPaginate: () => of(emptyPage),
+            searchProductsPaginate: () => of(emptyPage),
+          },
+        },
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            paramMap: of(convertToParamMap({ id: '1' })),
+            snapshot: { paramMap: convertToParamMap({ id: '1' }) },
+          },
+        },
+      ],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(ProductListComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+    expect(fixture.componentInstance).toBeTruthy();
   });
 });

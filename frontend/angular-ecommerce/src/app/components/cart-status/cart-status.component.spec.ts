@@ -1,23 +1,25 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
+import { RouterTestingModule } from '@angular/router/testing';
 import { CartStatusComponent } from './cart-status.component';
+import { CartService } from '../../services/cart.service';
+import { SharedMaterialModule } from '../../shared-material.module';
 
 describe('CartStatusComponent', () => {
-  let component: CartStatusComponent;
   let fixture: ComponentFixture<CartStatusComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [CartStatusComponent]
-    })
-    .compileComponents();
+      imports: [RouterTestingModule, SharedMaterialModule],
+      declarations: [CartStatusComponent],
+      providers: [provideNoopAnimations(), CartService],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(CartStatusComponent);
-    component = fixture.componentInstance;
     fixture.detectChanges();
   });
 
   it('should create', () => {
-    expect(component).toBeTruthy();
+    expect(fixture.componentInstance).toBeTruthy();
   });
 });

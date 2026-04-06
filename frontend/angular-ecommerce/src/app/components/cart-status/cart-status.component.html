@@ -1,6 +1,11 @@
-<div class="cart-area d-b">
-  <a routerLink="/cart">
-    <div class="total">{{ totalPrice | currency:'USD' }} <span>{{ totalQuantity }}</span></div>
-    <i class="fa fa-shopping-cart" aria-hidden="true"></i>
-  </a>
-  </div>
+<button
+  mat-icon-button
+  type="button"
+  routerLink="/cart"
+  [matBadge]="totalQuantity"
+  matBadgeColor="accent"
+  matBadgeSize="small"
+  [matBadgeHidden]="totalQuantity === 0"
+  aria-label="Shopping cart">
+  <mat-icon>shopping_cart</mat-icon>
+</button>
