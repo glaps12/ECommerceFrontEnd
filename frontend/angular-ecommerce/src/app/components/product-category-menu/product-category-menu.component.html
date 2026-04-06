@@ -1,14 +1,14 @@
-<div class="menu-sidebar-content js-scrollbar1">
-    <nav class="navbar-sidebar">
-      <ul class="list-unstyled navbar-list">
-        <li *ngFor=" let tempProductCategory of productCategories">
-          <a routerLink="/category/{{tempProductCategory.id}}" routerLinkActive="active-link">
-            
-            {{ tempProductCategory.categoryName }}
-          </a>
-        </li>
-        
-        
-      </ul>
-    </nav>
-  </div>
+<mat-nav-list>
+  <a mat-list-item routerLink="/products" routerLinkActive="active-link">
+    <mat-icon matListItemIcon>storefront</mat-icon>
+    <span matListItemTitle>All products</span>
+  </a>
+  <a
+    mat-list-item
+    *ngFor="let tempProductCategory of productCategories"
+    [routerLink]="['/category', tempProductCategory.id]"
+    routerLinkActive="active-link">
+    <mat-icon matListItemIcon>label</mat-icon>
+    <span matListItemTitle>{{ tempProductCategory.categoryName }}</span>
+  </a>
+</mat-nav-list>

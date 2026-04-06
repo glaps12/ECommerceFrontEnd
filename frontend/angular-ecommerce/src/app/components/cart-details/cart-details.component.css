@@ -1,70 +1,100 @@
-.cart-details {
-  padding-top: 2rem;
-  padding-bottom: 3rem;
-  min-height: calc(100vh - 200px);
-  display: flex;
-  flex-direction: column;
+/* ── Cart Page ────────────────────────────────────────── */
+.cart-page {
+  max-width: 1020px;
+  margin: 0 auto;
 }
 
-.cart-thumb {
-  width: 60px;
-  height: 60px;
+.cart-heading {
+  margin: 0 0 20px;
+  font-size: 1.6rem;
+  font-weight: 600;
+}
+
+/* ── Table Card ──────────────────────────────────────── */
+.cart-table-card {
+  margin-bottom: 20px;
+  overflow: auto;
+  border-radius: 16px !important;
+}
+
+.cart-table {
+  width: 100%;
+  min-width: 540px;
+}
+
+.product-cell {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.thumb {
+  width: 56px;
+  height: 56px;
   object-fit: contain;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--mat-sys-surface-container) 60%, transparent);
+  padding: 4px;
 }
 
-.product-info {
-  display: flex;
+/* ── Quantity Controls ───────────────────────────────── */
+.qty-group {
+  display: inline-flex;
   align-items: center;
-  gap: 1rem;
-  flex-wrap: wrap;
+  gap: 2px;
+  background: color-mix(in srgb, var(--mat-sys-surface-container-highest) 40%, transparent);
+  border-radius: 12px;
+  padding: 0 4px;
 }
 
-.quantity-controls span {
-  min-width: 60px;
-}
-
-.totals {
-  max-width: 400px;
-  margin-left: auto;
-  font-size: 1.1rem;
-}
-
-.totals .shipping-row {
-  color: #16a34a;
-}
-
-.totals .total-row {
-  font-size: 1.3rem;
-}
-
-.empty-cart {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+.qty-value {
+  min-width: 32px;
   text-align: center;
-  padding: 3rem 1rem;
+  font-weight: 600;
+  font-size: 0.95rem;
 }
 
-@media (max-width: 767px) {
-  .cart-thumb {
-    width: 50px;
-    height: 50px;
-  }
-
-  .product-info {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .quantity-controls {
-    width: 100%;
-    justify-content: center;
-  }
-
-  .totals {
-    width: 100%;
-  }
+.text-center {
+  text-align: center;
 }
 
+.text-end {
+  text-align: end;
+}
+
+/* ── Totals Card ─────────────────────────────────────── */
+.totals-card {
+  max-width: 380px;
+  margin-left: auto;
+  border-radius: 16px !important;
+}
+
+.totals-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  font-size: 0.95rem;
+}
+
+.totals-row.shipping span:last-child {
+  color: var(--mat-sys-tertiary);
+  font-weight: 500;
+}
+
+.totals-row.total {
+  font-weight: 700;
+  font-size: 1.15rem;
+  margin-top: 8px;
+}
+
+/* ── Empty Cart ──────────────────────────────────────── */
+.empty-card {
+  text-align: center;
+  padding: 48px 24px;
+  border-radius: 16px !important;
+}
+
+.cart-actions {
+  padding-top: 8px;
+  padding-bottom: 0;
+}

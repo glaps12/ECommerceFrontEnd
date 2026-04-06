@@ -1,0 +1,10 @@
+:host ::ng-deep a.active-link {
+  background-color: color-mix(in srgb, var(--mat-sys-primary) 12%, transparent);
+  border-radius: 12px;
+}
+
+:host ::ng-deep .mat-mdc-list-item {
+  border-radius: 12px !important;
+  margin: 2px 8px;
+  transition: background-color 0.2s ease;
+}

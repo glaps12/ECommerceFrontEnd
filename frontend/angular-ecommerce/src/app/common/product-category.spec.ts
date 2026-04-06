@@ -2,6 +2,6 @@ import { ProductCategory } from './product-category';
 
 describe('ProductCategory', () => {
   it('should create an instance', () => {
-    expect(new ProductCategory()).toBeTruthy();
+    expect(new ProductCategory(1, 'Books')).toBeTruthy();
   });
 });

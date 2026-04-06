@@ -1,12 +1,18 @@
-<div class="form-header">
-    <input  #myinput class="au-input au-input-xl"
+<div class="search-capsule">
+  <mat-icon class="search-icon">search</mat-icon>
+  <input
+    class="search-input"
     type="text"
-    placeholder="Search for products ..."
-    (keyup.enter)="doSearch(myinput.value)"
-
-        />
-
-    <button (click)="doSearch(myinput.value)" class="au-btn-submit" >
-      Search
-    </button>
+    placeholder="Search products…"
+    #q
+    (keyup.enter)="doSearch(q.value)" />
+  <button
+    *ngIf="q.value"
+    mat-icon-button
+    type="button"
+    class="clear-btn"
+    (click)="q.value = ''"
+    aria-label="Clear search">
+    <mat-icon>close</mat-icon>
+  </button>
 </div>

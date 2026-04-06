@@ -1,0 +1,156 @@
+/* ── Detail Card ─────────────────────────────────────── */
+.detail-card {
+  max-width: 1020px;
+  margin: 0 auto;
+  border-radius: 20px !important;
+  overflow: hidden;
+}
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  align-items: stretch;
+}
+
+/* ── Image Section ───────────────────────────────────── */
+.detail-image-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.detail-image-container {
+  width: 100%;
+  height: 100%;
+  min-height: 360px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg,
+    color-mix(in srgb, var(--mat-sys-surface-container) 60%, transparent),
+    color-mix(in srgb, var(--mat-sys-surface-container-highest) 40%, transparent)
+  );
+}
+
+.detail-image {
+  max-width: 90%;
+  max-height: 360px;
+  object-fit: contain;
+  display: block;
+  transition: transform 0.4s ease;
+}
+
+.detail-image:hover {
+  transform: scale(1.05);
+}
+
+/* ── Body Section ────────────────────────────────────── */
+.detail-body {
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.detail-title {
+  margin: 0;
+  font-size: 1.6rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.detail-sku {
+  margin: 0;
+  font-size: 0.8rem;
+  opacity: 0.5;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+}
+
+.detail-price {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin: 12px 0 4px;
+  color: var(--mat-sys-primary);
+}
+
+.detail-stock {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--mat-sys-tertiary);
+  margin-bottom: 16px;
+}
+
+.detail-stock.out {
+  color: var(--mat-sys-error);
+}
+
+.stock-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+.detail-add-btn {
+  align-self: flex-start;
+  border-radius: 12px !important;
+  padding: 0 28px !important;
+  height: 44px;
+  font-weight: 500;
+  gap: 8px;
+  font-size: 0.95rem;
+}
+
+.detail-divider {
+  margin: 24px 0;
+}
+
+.detail-subhead {
+  margin: 0 0 8px;
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.detail-desc {
+  margin: 0 0 24px;
+  line-height: 1.7;
+  opacity: 0.85;
+  font-size: 0.95rem;
+}
+
+.back-btn {
+  align-self: flex-start;
+  border-radius: 12px !important;
+  gap: 6px;
+}
+
+/* ── Responsive ──────────────────────────────────────── */
+@media (max-width: 760px) {
+  .detail-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .detail-image-container {
+    min-height: 240px;
+  }
+
+  .detail-image {
+    max-height: 240px;
+  }
+
+  .detail-body {
+    padding: 20px;
+  }
+
+  .detail-title {
+    font-size: 1.3rem;
+  }
+
+  .detail-price {
+    font-size: 1.4rem;
+  }
+}

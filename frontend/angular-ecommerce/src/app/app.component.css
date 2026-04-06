@@ -1,0 +1,102 @@
+/* ── App Shell ───────────────────────────────────────── */
+.app-shell {
+  height: 100vh;
+}
+
+/* ── Toolbar ─────────────────────────────────────────── */
+.app-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.toolbar-spacer {
+  flex: 1 1 auto;
+}
+
+
+
+.toolbar-search {
+  flex: 1 1 360px;
+  max-width: 560px;
+  min-width: 0;
+}
+
+.theme-toggle-btn {
+  transition: transform 0.3s ease;
+}
+
+.theme-toggle-btn:hover {
+  transform: rotate(30deg);
+}
+
+/* ── Main Content ────────────────────────────────────── */
+.router-outlet-wrap {
+  padding: 24px;
+  min-height: calc(100vh - 160px);
+  box-sizing: border-box;
+}
+
+/* ── Footer ──────────────────────────────────────────── */
+.app-footer {
+  padding: 16px 24px;
+  border-top: 1px solid color-mix(in srgb, var(--mat-sys-outline) 20%, transparent);
+}
+
+.footer-inner {
+  max-width: 1440px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.footer-brand {
+  font-size: 0.82rem;
+  opacity: 0.5;
+  font-weight: 400;
+}
+
+.footer-links {
+  display: flex;
+  gap: 0;
+}
+
+/* ── Sidenav ─────────────────────────────────────────── */
+.app-sidenav {
+  width: 280px;
+}
+
+.sidenav-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 20px 20px 12px;
+}
+
+.brand-icon {
+  font-size: 28px;
+  width: 28px;
+  height: 28px;
+  color: var(--mat-sys-primary);
+}
+
+.brand-text {
+  font-weight: 700;
+  font-size: 1.2rem;
+  letter-spacing: -0.01em;
+}
+
+/* ── Responsive ──────────────────────────────────────── */
+@media (max-width: 599px) {
+  .router-outlet-wrap {
+    padding: 16px;
+  }
+}
