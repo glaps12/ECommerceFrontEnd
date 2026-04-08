@@ -9,10 +9,11 @@ import { ProductService } from './services/product.service';
 import { ProductCategoryMenuComponent } from './components/product-category-menu/product-category-menu.component';
 import { SearchComponent } from './components/search/search.component';
 import { ProductDetailsComponent } from './components/product-details/product-details.component';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CartStatusComponent } from './components/cart-status/cart-status.component';
 import { CartDetailsComponent } from './components/cart-details/cart-details.component';
 import { SharedMaterialModule } from './shared-material.module';
+import { LoginComponent } from './components/login/login.component';
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import { SharedMaterialModule } from './shared-material.module';
     ProductDetailsComponent,
     CartStatusComponent,
     CartDetailsComponent,
+    LoginComponent,
   ],
   imports: [
     BrowserModule,
@@ -30,6 +32,7 @@ import { SharedMaterialModule } from './shared-material.module';
     AppRoutingModule,
     SharedMaterialModule,
     FormsModule,
+    ReactiveFormsModule,
   ],
   providers: [provideClientHydration(), provideHttpClient(withFetch()), ProductService],
   bootstrap: [AppComponent],

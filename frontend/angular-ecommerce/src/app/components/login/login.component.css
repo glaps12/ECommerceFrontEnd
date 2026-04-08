@@ -1,0 +1,449 @@
+/* ── Container ─────────────────────────────────────── */
+:host {
+  display: block;
+  min-height: 100vh;
+}
+
+.login-container {
+  display: flex;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+/* ── Branding Panel (Left 35%) ─────────────────────── */
+.branding-panel {
+  position: relative;
+  flex: 0 0 35%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.branding-bg {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+  background-size: 200% 200%;
+  animation: gradientShift 8s ease infinite;
+  transition: background-position 0.6s ease;
+  z-index: 0;
+}
+
+.branding-panel:hover .branding-bg {
+  background-position: 100% 100%;
+}
+
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* ── Floating Particles ────────────────────────────── */
+.particles {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.particle {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  animation: float 12s infinite ease-in-out;
+}
+
+.particle:nth-child(1) { top: 10%; left: 20%; animation-delay: 0s; animation-duration: 14s; width: 8px; height: 8px; }
+.particle:nth-child(2) { top: 60%; left: 80%; animation-delay: 2s; animation-duration: 10s; width: 5px; height: 5px; }
+.particle:nth-child(3) { top: 30%; left: 50%; animation-delay: 4s; animation-duration: 16s; width: 10px; height: 10px; }
+.particle:nth-child(4) { top: 80%; left: 30%; animation-delay: 1s; animation-duration: 12s; }
+.particle:nth-child(5) { top: 50%; left: 10%; animation-delay: 3s; animation-duration: 18s; width: 7px; height: 7px; }
+.particle:nth-child(6) { top: 20%; left: 70%; animation-delay: 5s; animation-duration: 11s; width: 4px; height: 4px; }
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) translateX(0) scale(1); opacity: 0.15; }
+  25% { transform: translateY(-40px) translateX(20px) scale(1.2); opacity: 0.3; }
+  50% { transform: translateY(-20px) translateX(-15px) scale(0.8); opacity: 0.2; }
+  75% { transform: translateY(30px) translateX(10px) scale(1.1); opacity: 0.25; }
+}
+
+/* ── Branding Content ──────────────────────────────── */
+.branding-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  color: #fff;
+  padding: 2rem;
+}
+
+.brand-logo {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+.brand-logo:hover {
+  transform: scale(1.08) rotate(5deg);
+  box-shadow: 0 0 30px rgba(100, 130, 255, 0.3);
+}
+
+.logo-icon {
+  font-size: 42px !important;
+  width: 42px !important;
+  height: 42px !important;
+  color: #a5b4fc;
+}
+
+.brand-name {
+  font-size: 2.2rem;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  margin: 0 0 0.5rem;
+  background: linear-gradient(135deg, #e0e7ff, #a5b4fc);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.brand-tagline {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 300;
+  margin: 0 0 2.5rem;
+  letter-spacing: 0.5px;
+}
+
+.brand-features {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+}
+
+.feature-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.feature-item:hover {
+  color: #a5b4fc;
+  transform: translateX(6px);
+}
+
+.feature-item mat-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+  color: #818cf8;
+}
+
+/* ── Form Panel (Right 65%) ────────────────────────── */
+.form-panel {
+  flex: 0 0 65%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  background: var(--mat-sys-surface, #fafafa);
+}
+
+/* ── Login Card ────────────────────────────────────── */
+.login-card {
+  width: 100%;
+  max-width: 480px;
+  padding: 2.5rem;
+  border-radius: 24px !important;
+  background: var(--mat-sys-surface-container-low, #fff) !important;
+  border: 1px solid color-mix(in srgb, var(--mat-sys-outline-variant, #ccc) 30%, transparent);
+  box-shadow:
+    0 4px 24px rgba(0, 0, 0, 0.06),
+    0 1px 4px rgba(0, 0, 0, 0.04) !important;
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.login-card:hover {
+  box-shadow:
+    0 8px 40px rgba(0, 0, 0, 0.1),
+    0 2px 8px rgba(0, 0, 0, 0.06) !important;
+  transform: translateY(-2px);
+}
+
+.form-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin: 0 0 0.25rem;
+  color: var(--mat-sys-on-surface, #1a1a1a);
+}
+
+.form-subtitle {
+  font-size: 0.9rem;
+  color: var(--mat-sys-on-surface-variant, #666);
+  margin: 0 0 2rem;
+}
+
+/* ── Auth Form ─────────────────────────────────────── */
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.name-row {
+  display: flex;
+  gap: 1rem;
+}
+
+.form-field {
+  width: 100%;
+}
+
+.form-field.half {
+  flex: 1;
+}
+
+/* ── Text Visibility ─────────────── */
+/* Ensure typed text is solid colored and visible */
+.form-field ::ng-deep input.mat-mdc-input-element {
+  color: #1a1a1a !important;
+}
+
+/* Ensure placeholder text / floating labels are visible */
+.form-field ::ng-deep .mdc-floating-label,
+.form-field ::ng-deep .mat-mdc-form-field-error {
+  color: #666666 !important;
+}
+
+.form-field ::ng-deep .mat-mdc-form-field-icon-prefix mat-icon,
+.form-field ::ng-deep .mat-mdc-form-field-icon-suffix mat-icon {
+  color: #666666 !important;
+  padding-right: 4px;
+}
+
+/* ── Submit Button ─────────────────────────────────── */
+.submit-btn {
+  width: 100%;
+  height: 52px;
+  margin-top: 0.75rem;
+  border-radius: 14px !important;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  background: linear-gradient(135deg, #4f46e5, #7c3aed) !important;
+  color: #fff !important;
+  transition: transform 0.2s ease, box-shadow 0.3s ease, filter 0.3s ease !important;
+  position: relative;
+}
+
+.submit-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(79, 70, 229, 0.35);
+  filter: brightness(1.05);
+}
+
+.submit-btn:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(79, 70, 229, 0.25);
+}
+
+.submit-btn:disabled {
+  opacity: 0.7;
+}
+
+.btn-spinner {
+  display: inline-block;
+}
+
+.btn-spinner ::ng-deep circle {
+  stroke: #fff !important;
+}
+
+/* ── Divider ───────────────────────────────────────── */
+.divider-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 1.75rem 0;
+}
+
+.divider-line {
+  flex: 1;
+}
+
+.divider-text {
+  font-size: 0.8rem;
+  color: var(--mat-sys-on-surface-variant, #999);
+  white-space: nowrap;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ── Social Buttons ────────────────────────────────── */
+.social-buttons {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.social-btn {
+  flex: 1;
+  height: 48px;
+  border-radius: 12px !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: transform 0.2s ease, box-shadow 0.3s ease, border-color 0.3s ease !important;
+  border: 1px solid color-mix(in srgb, var(--mat-sys-outline-variant, #ddd) 50%, transparent) !important;
+}
+
+.social-btn:hover {
+  transform: translateY(-2px);
+}
+
+.google-btn:hover {
+  border-color: #4285f4 !important;
+  box-shadow: 0 4px 12px rgba(66, 133, 244, 0.15);
+}
+
+.facebook-btn:hover {
+  border-color: #1877f2 !important;
+  box-shadow: 0 4px 12px rgba(24, 119, 242, 0.15);
+}
+
+.instagram-btn:hover {
+  border-color: #e1306c !important;
+  box-shadow: 0 4px 12px rgba(225, 48, 108, 0.15);
+}
+
+.social-icon {
+  flex-shrink: 0;
+}
+
+/* ── Toggle Mode ───────────────────────────────────── */
+.toggle-mode {
+  text-align: center;
+  margin-top: 1.5rem;
+  font-size: 0.9rem;
+  color: var(--mat-sys-on-surface-variant, #888);
+}
+
+.toggle-btn {
+  color: #4f46e5 !important;
+  font-weight: 600;
+}
+
+.toggle-btn:hover {
+  text-decoration: underline;
+}
+
+/* ── Snackbar Styles (global, via panelClass) ──────── */
+:host ::ng-deep .success-snackbar .mdc-snackbar__surface {
+  background: #059669 !important;
+}
+
+:host ::ng-deep .error-snackbar .mdc-snackbar__surface {
+  background: #dc2626 !important;
+}
+
+/* ── Responsive: Stack Vertically ──────────────────── */
+@media (max-width: 768px) {
+  .login-container {
+    flex-direction: column;
+  }
+
+  .branding-panel {
+    flex: 0 0 auto;
+    min-height: 200px;
+    padding: 2rem 1rem;
+  }
+
+  .brand-name {
+    font-size: 1.6rem;
+  }
+
+  .brand-tagline {
+    margin-bottom: 1rem;
+    font-size: 0.85rem;
+  }
+
+  .brand-features {
+    flex-direction: row;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .feature-item {
+    font-size: 0.8rem;
+  }
+
+  .brand-logo {
+    width: 64px;
+    height: 64px;
+    margin-bottom: 1rem;
+  }
+
+  .logo-icon {
+    font-size: 32px !important;
+    width: 32px !important;
+    height: 32px !important;
+  }
+
+  .form-panel {
+    flex: 1 1 auto;
+    padding: 1.5rem 1rem;
+  }
+
+  .login-card {
+    padding: 1.5rem;
+    border-radius: 20px !important;
+  }
+
+  .social-buttons {
+    flex-direction: column;
+  }
+
+  .social-btn {
+    width: 100%;
+  }
+
+  .name-row {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .branding-panel {
+    min-height: 160px;
+  }
+
+  .login-card {
+    padding: 1.25rem;
+  }
+
+  .form-title {
+    font-size: 1.4rem;
+  }
+
+  .submit-btn {
+    height: 48px;
+  }
+}

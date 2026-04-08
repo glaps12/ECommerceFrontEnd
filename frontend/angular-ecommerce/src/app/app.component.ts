@@ -1,9 +1,10 @@
-﻿import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Component, ViewChild, inject, afterNextRender } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { MatSidenav } from '@angular/material/sidenav';
-import { filter, map, shareReplay } from 'rxjs';
+import { filter, map, shareReplay, startWith } from 'rxjs';
 import { ThemeService } from './services/theme.service';
+import { AuthService } from './services/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -16,9 +17,17 @@ export class AppComponent {
   private readonly breakpointObserver = inject(BreakpointObserver);
   private readonly router = inject(Router);
   readonly themeService = inject(ThemeService);
+  readonly authService = inject(AuthService);
 
   readonly isHandset$ = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
     map((r) => r.matches),
+    shareReplay(1),
+  );
+
+  readonly isLoginPage$ = this.router.events.pipe(
+    filter((e) => e instanceof NavigationEnd),
+    map((e) => (e as NavigationEnd).urlAfterRedirects === '/login'),
+    startWith(false),
     shareReplay(1),
   );
 
@@ -36,5 +45,10 @@ export class AppComponent {
 
   toggleTheme(): void {
     this.themeService.toggle();
+  }
+
+  logout(): void {
+    this.authService.logout();
+    this.router.navigate(['/login']);
   }
 }
