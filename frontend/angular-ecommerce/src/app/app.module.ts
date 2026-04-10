@@ -10,10 +10,12 @@ import { ProductCategoryMenuComponent } from './components/product-category-menu
 import { SearchComponent } from './components/search/search.component';
 import { ProductDetailsComponent } from './components/product-details/product-details.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 import { CartStatusComponent } from './components/cart-status/cart-status.component';
 import { CartDetailsComponent } from './components/cart-details/cart-details.component';
 import { SharedMaterialModule } from './shared-material.module';
 import { LoginComponent } from './components/login/login.component';
+import { SettingsComponent } from './components/settings/settings.component';
 
 @NgModule({
   declarations: [
@@ -25,6 +27,7 @@ import { LoginComponent } from './components/login/login.component';
     CartStatusComponent,
     CartDetailsComponent,
     LoginComponent,
+    SettingsComponent,
   ],
   imports: [
     BrowserModule,
@@ -33,6 +36,7 @@ import { LoginComponent } from './components/login/login.component';
     SharedMaterialModule,
     FormsModule,
     ReactiveFormsModule,
+    CommonModule,
   ],
   providers: [provideClientHydration(), provideHttpClient(withFetch()), ProductService],
   bootstrap: [AppComponent],

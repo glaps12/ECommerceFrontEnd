@@ -8,8 +8,8 @@ import { ProductCategory } from '../common/product-category';
   providedIn: 'root',
 })
 export class ProductService {
-  private baseUrl = 'http://localhost:8080/api/products';
-  private categoryUrl = 'http://localhost:8080/api/product-category';
+  private baseUrl = 'http://127.0.0.1:8080/api/products';
+  private categoryUrl = 'http://127.0.0.1:8080/api/product-category';
 
   private categories$: Observable<ProductCategory[]> | null = null;
 

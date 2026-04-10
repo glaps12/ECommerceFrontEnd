@@ -51,6 +51,8 @@ export class LoginComponent {
   pendingEmail = '';
   isLoading = false;
   hidePassword = true;
+  errorMessage = '';
+  successMessage = '';
 
   loginForm: FormGroup = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
@@ -82,6 +84,9 @@ export class LoginComponent {
   }
 
   onSubmit(): void {
+    this.errorMessage = '';
+    this.successMessage = '';
+
     if (this.activeForm.invalid) {
       this.activeForm.markAllAsTouched();
       return;
@@ -95,7 +100,8 @@ export class LoginComponent {
       const cpw = this.signupForm.value.confirmPassword;
       if (pw !== cpw) {
         this.isLoading = false;
-        this.snackBar.open('Passwords do not match', 'OK', { duration: 4000, panelClass: ['error-snackbar'] });
+        this.errorMessage = 'Passwords do not match.';
+        this.snackBar.open('Passwords do not match.', 'OK', { duration: 4000, panelClass: ['error-snackbar'] });
         return;
       }
     }
@@ -105,36 +111,56 @@ export class LoginComponent {
         next: (res) => {
           this.isLoading = false;
           if (res.success) {
-            this.snackBar.open('Email verified! You can now log in.', 'OK', { duration: 4000, panelClass: ['success-snackbar'] });
+            this.successMessage = 'Email verified! You can now log in.';
+            this.snackBar.open(this.successMessage, 'OK', { duration: 4000, panelClass: ['success-snackbar'] });
             this.isVerification = false;
             this.isSignup = false;
             this.loginForm.patchValue({ email: this.pendingEmail });
           } else {
+            this.errorMessage = res.message;
             this.snackBar.open(res.message, 'OK', { duration: 4000, panelClass: ['error-snackbar'] });
           }
         },
         error: (err) => {
           this.isLoading = false;
           const msg = err.error?.message || 'Verification failed. Please try again.';
+          this.errorMessage = msg;
           this.snackBar.open(msg, 'OK', { duration: 4000, panelClass: ['error-snackbar'] });
         },
       });
     } else if (this.isSignup) {
-      this.authService.signup({ email: this.signupForm.value.email, password: this.signupForm.value.password }).subscribe({
+      this.authService.signup({
+        firstName: this.signupForm.value.firstName,
+        lastName: this.signupForm.value.lastName,
+        email: this.signupForm.value.email,
+        password: this.signupForm.value.password 
+      }).subscribe({
         next: (res) => {
           this.isLoading = false;
           if (res.success) {
-            this.snackBar.open('Account created! Please check your email for the verification code.', 'OK', { duration: 5000, panelClass: ['success-snackbar'] });
+            this.successMessage = 'Account created! Please check your email for the verification code.';
+            this.snackBar.open(this.successMessage, 'OK', { duration: 5000, panelClass: ['success-snackbar'] });
             this.isVerification = true;
             this.pendingEmail = this.signupForm.value.email;
           } else {
+            this.errorMessage = res.message;
             this.snackBar.open(res.message, 'OK', { duration: 4000, panelClass: ['error-snackbar'] });
           }
         },
         error: (err) => {
           this.isLoading = false;
-          const msg = err.error?.message || 'Signup failed. Please try again.';
-          this.snackBar.open(msg, 'OK', { duration: 4000, panelClass: ['error-snackbar'] });
+          console.error("Signup error details: ", err);
+          let msg = 'Signup failed. Please try again.';
+          if (err.error && typeof err.error === 'object' && err.error.message) {
+            msg = err.error.message;
+          } else if (typeof err.error === 'string') {
+            try {
+              const parsed = JSON.parse(err.error);
+              if (parsed.message) msg = parsed.message;
+            } catch (e) { }
+          }
+          this.errorMessage = msg;
+          this.snackBar.open(msg, 'OK', { duration: 5000, panelClass: ['error-snackbar'] });
         },
       });
     } else {
@@ -142,17 +168,30 @@ export class LoginComponent {
         next: (res) => {
           this.isLoading = false;
           if (res.success) {
-            this.snackBar.open(`Welcome, ${res.firstName}!`, '🎉', { duration: 3000, panelClass: ['success-snackbar'] });
+            this.successMessage = `Welcome, ${res.firstName}!`;
+            this.snackBar.open(this.successMessage, '🎉', { duration: 3000, panelClass: ['success-snackbar'] });
             this.router.navigate(['/products']);
           } else {
+            this.errorMessage = res.message;
             this.snackBar.open(res.message, 'OK', { duration: 4000, panelClass: ['error-snackbar'] });
           }
         },
         error: (err) => {
           this.isLoading = false;
-          const msg = err.error?.message || 'Login failed. Please try again.';
+          console.error("Login error details: ", err);
+          let msg = 'Login failed. Please try again.';
+          if (err.error && typeof err.error === 'object' && err.error.message) {
+            msg = err.error.message;
+          } else if (typeof err.error === 'string') {
+            try {
+              const parsed = JSON.parse(err.error);
+              if (parsed.message) msg = parsed.message;
+            } catch (e) { }
+          }
+
+          this.errorMessage = msg;
           this.snackBar.open(msg, 'OK', { duration: 4000, panelClass: ['error-snackbar'] });
-          if (err.status === 403 && msg.includes('verify')) {
+          if (err.status === 403 && msg.toLowerCase().includes('verify')) {
             this.pendingEmail = this.loginForm.value.email;
             this.isVerification = true;
           }
