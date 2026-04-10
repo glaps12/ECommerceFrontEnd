@@ -6,74 +6,62 @@
 <!-- Normal app shell for all other pages -->
 <ng-template #appShell>
   <mat-sidenav-container class="app-shell">
-    <mat-sidenav
-      #drawer
-      [mode]="(isHandset$ | async) ? 'over' : 'side'"
-      [opened]="(isHandset$ | async) === false"
+    <mat-sidenav #drawer [mode]="(isHandset$ | async) ? 'over' : 'side'" 
+      [opened]="(isHandset$ | async) === false && (isFullWidthPage$ | async) === false"
       class="app-sidenav">
-      <div class="sidenav-header">
-        <mat-icon class="brand-icon">storefront</mat-icon>
-        <span class="brand-text">BrookyShop</span>
+      <div class="sidenav-wrapper">
+        <div class="sidenav-header">
+          <mat-icon class="brand-icon">storefront</mat-icon>
+          <span class="brand-text">BrookyShop</span>
+        </div>
+        <div class="sidenav-main">
+          <app-product-category-menu></app-product-category-menu>
+        </div>
       </div>
-      <app-product-category-menu></app-product-category-menu>
     </mat-sidenav>
 
     <mat-sidenav-content>
       <mat-toolbar class="app-toolbar">
-        <button
-          mat-icon-button
-          type="button"
-          class="menu-btn"
-          (click)="drawer.toggle()"
-          *ngIf="isHandset$ | async"
-          aria-label="Open categories menu">
+        <button mat-icon-button type="button" class="menu-btn" (click)="drawer.toggle()" *ngIf="isHandset$ | async"
+          matTooltip="Menu" aria-label="Open categories menu">
           <mat-icon>menu</mat-icon>
         </button>
-        <app-search class="toolbar-search"></app-search>
+
+        <!-- Logo for non-handset (optional, but requested implicitly by 'icons everywhere') -->
+        <app-search class="toolbar-search" *ngIf="!(isFullWidthPage$ | async)"></app-search>
+        
         <span class="toolbar-spacer"></span>
-        <app-cart-status></app-cart-status>
 
-        <!-- Login / User Button -->
-        <ng-container *ngIf="authService.isLoggedIn$ | async; else loginBtnTpl">
-          <button
-            mat-icon-button
-            type="button"
-            [matMenuTriggerFor]="userMenu"
-            class="user-btn"
-            aria-label="User menu">
-            <mat-icon>account_circle</mat-icon>
+        <div class="toolbar-actions">
+          <app-cart-status matTooltip="View Cart" [matTooltipShowDelay]="500"></app-cart-status>
+
+          <button mat-icon-button type="button" (click)="toggleTheme()"
+            [matTooltip]="(themeService.dark$ | async) ? 'Switch to light mode' : 'Switch to dark mode'"
+            [matTooltipShowDelay]="1000"
+            class="theme-toggle-btn">
+            <mat-icon>{{ (themeService.dark$ | async) ? 'light_mode' : 'dark_mode' }}</mat-icon>
           </button>
-          <mat-menu #userMenu="matMenu">
-            <div class="user-menu-header" mat-menu-item disabled>
-              <mat-icon>person</mat-icon>
-              <span>{{ authService.userName$ | async }}</span>
-            </div>
-            <mat-divider></mat-divider>
-            <button mat-menu-item (click)="logout()">
-              <mat-icon>logout</mat-icon>
-              <span>Log Out</span>
+
+          <ng-container *ngIf="authService.isLoggedIn$ | async; else loginBtnTpl">
+            <button mat-icon-button type="button" routerLink="/settings" class="user-btn" 
+              [matTooltip]="'Account Settings (Welcome ' + (authService.userName$ | async) + ')'" 
+              [matTooltipShowDelay]="2000"
+              aria-label="User settings">
+              <mat-icon>account_circle</mat-icon>
             </button>
-          </mat-menu>
-        </ng-container>
-        <ng-template #loginBtnTpl>
-          <button
-            mat-icon-button
-            type="button"
-            routerLink="/login"
-            aria-label="Log in"
-            class="login-btn">
-            <mat-icon>login</mat-icon>
-          </button>
-        </ng-template>
+            <button mat-icon-button type="button" (click)="logout()" class="logout-btn"
+              matTooltip="Log Out" [matTooltipShowDelay]="1000" aria-label="Log out">
+              <mat-icon>logout</mat-icon>
+            </button>
+          </ng-container>
 
-        <button
-          mat-icon-button
-          type="button"
-          (click)="toggleTheme()"
-          [attr.aria-label]="(themeService.dark$ | async) ? 'Switch to light mode' : 'Switch to dark mode'"
-          class="theme-toggle-btn">
-          <mat-icon>{{ (themeService.dark$ | async) ? 'light_mode' : 'dark_mode' }}</mat-icon>
-        </button>
+          <ng-template #loginBtnTpl>
+            <button mat-icon-button type="button" routerLink="/login" 
+              matTooltip="Log In" [matTooltipShowDelay]="1000" aria-label="Log in" class="login-btn">
+              <mat-icon>login</mat-icon>
+            </button>
+          </ng-template>
+        </div>
       </mat-toolbar>
 
       <main class="router-outlet-wrap">

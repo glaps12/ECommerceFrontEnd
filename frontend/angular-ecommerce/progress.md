@@ -22,6 +22,23 @@
 - [x] **UI redesign (2026-04-04)**: Fixed broken product card display (`mat-card-image` negative margins in M3), redesigned entire UI — Inter font, card hover animations, gradient image backgrounds, stock badges, branded sidenav, capsule search bar, custom paginator, refined cart page, themed scrollbar, responsive layouts
 - [x] **Search bar**: Replaced bulky `mat-form-field` + button with sleek capsule-shaped inline search bar with embedded icon and clear button
 - [x] **Toolbar cleanup**: Removed duplicate "BrookyShop" title; search bar sits left-aligned in toolbar
+- [x] **User authentication UI & Backend**: Implemented Register/Login/Verify workflow using local JWT/basic auth. `LoginComponent` handles toggleable forms.
+- [x] **Registration flow fixes**: 
+  - Overcame Node 17+ SSR `ECONNREFUSED` local network bug by strictly using `127.0.0.1` over `localhost` in HTTP Services.
+  - Fixed `JavaMailSender` context crash when SMTP is unconfigured by safely simulating verification emails in backend stdout.
+  - Implemented explicit HTTP 409 backend rejection messages ("Email is already in use.") for duplicate registrations.
+  - Fixed error-handling opacity: Updated frontend `AuthService` catch handlers to parse JSON errors properly and display persistent, styled inline error/success messages directly on the auth form.
+  - Hardened backend defaults: `firstName` and `lastName` explicitly initialize to empty strings (`""`) to prevent email-slicing hacks.
+  - Fixed UI and Backend textual inconsistencies: Audited and corrected grammatical punctuation periods across all error/success messages.
+- [x] **Premium Account Center (2026-04-09)**:
+    - **Elite UI Design**: Implemented a state-of-the-art Account Center using Glassmorphism, animated background blobs, and a dedicated dual-pane layout.
+    - **Typography & Details**: Refined font hierarchy (Inter/system-ui), jewel-like vibrant icons, and high-detail "Hero" dashboard banners with watermark decorative elements.
+    - **Intelligent Layout**: Implemented `isFullWidthPage$` observation logic to automatically collapse the global shop sidebar and hide the product search bar when the user enters the account domain to improve focus.
+    - **Micro-Animations**: Added fluid CSS slide-up transitions and lift-on-hover effects for all interactive elements.
+- [x] **Account Security & Persistence**:
+    - **Password Verification**: Enhanced password updates to require `currentPassword` verification. Updated `UpdateUserRequest` DTO, backend `AuthController`, and frontend `AuthService` to support this security-first flow.
+    - **Profile Persistence**: Wired "Personal Details" form to persist `firstName` and `lastName` updates to the backend MySQL database.
+    - **Session Logout**: Refined `logout()` method to clear all authentication state and automatically redirect the user to the `/login` page for a seamless exit experience.
 
 ## Do now
 - (none)
@@ -38,7 +55,6 @@
 - [ ] **Wishlist**: Add a wishlist feature (heart icon on product cards, separate `/wishlist` page, persisted in `localStorage`).
 - [ ] **Product sorting**: Add sort-by dropdown (price low→high, high→low, name A→Z) — requires backend `Sort` param support.
 - [ ] **Product filtering**: Add price range filter, in-stock filter on the product list page.
-- [ ] **User authentication**: Add login/register pages + auth guard (will need backend Spring Security support first).
 - [ ] **Shipping/tax calculations**: Separate from subtotal in cart totals, display breakdown in checkout.
 - [ ] **Order history**: After checkout domain is built, show past orders for logged-in users.
 - [ ] **Image optimization**: Lazy load product images with blur-up placeholders, use `NgOptimizedImage`.

@@ -18,12 +18,14 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatTabsModule } from '@angular/material/tabs';
 
 const MODULES = [
   LayoutModule, ScrollingModule, MatBadgeModule, MatButtonModule, MatCardModule, MatDividerModule,
   MatFormFieldModule, MatIconModule, MatInputModule, MatListModule, MatPaginatorModule,
   MatMenuModule, MatProgressSpinnerModule, MatSelectModule, MatSidenavModule, MatSnackBarModule, MatTableModule,
-  MatToolbarModule, MatCheckboxModule,
+  MatToolbarModule, MatCheckboxModule, MatTooltipModule, MatTabsModule,
 ];
 
 @NgModule({ imports: MODULES, exports: MODULES })

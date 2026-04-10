@@ -19,6 +19,8 @@ export class AppComponent {
   readonly themeService = inject(ThemeService);
   readonly authService = inject(AuthService);
 
+  isBrowser = false;
+
   readonly isHandset$ = this.breakpointObserver.observe(Breakpoints.Handset).pipe(
     map((r) => r.matches),
     shareReplay(1),
@@ -31,8 +33,19 @@ export class AppComponent {
     shareReplay(1),
   );
 
+  readonly isFullWidthPage$ = this.router.events.pipe(
+    filter((e) => e instanceof NavigationEnd),
+    map((e) => {
+      const url = (e as NavigationEnd).urlAfterRedirects;
+      return url.includes('/login') || url.includes('/settings');
+    }),
+    startWith(false),
+    shareReplay(1),
+  );
+
   constructor() {
     afterNextRender(() => {
+      this.isBrowser = true;
       this.themeService.initThemeFromStorage();
     });
     this.router.events.pipe(filter((e) => e instanceof NavigationEnd)).subscribe(() => {
