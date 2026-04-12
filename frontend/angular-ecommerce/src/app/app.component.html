@@ -30,6 +30,12 @@
         <!-- Logo for non-handset (optional, but requested implicitly by 'icons everywhere') -->
         <app-search class="toolbar-search" *ngIf="!(isFullWidthPage$ | async)"></app-search>
         
+        <div class="toolbar-brand-clickable" *ngIf="isFullWidthPage$ | async" routerLink="/products" 
+          matTooltip="Continue Shopping" [matTooltipShowDelay]="500">
+          <mat-icon class="brand-icon">storefront</mat-icon>
+          <span class="brand-text" *ngIf="!(isHandset$ | async)">BrookyShop</span>
+        </div>
+        
         <span class="toolbar-spacer"></span>
 
         <div class="toolbar-actions">
@@ -44,7 +50,7 @@
 
           <ng-container *ngIf="authService.isLoggedIn$ | async; else loginBtnTpl">
             <button mat-icon-button type="button" routerLink="/settings" class="user-btn" 
-              [matTooltip]="'Account Settings (Welcome ' + (authService.userName$ | async) + ')'" 
+              matTooltip="Account Settings"
               [matTooltipShowDelay]="2000"
               aria-label="User settings">
               <mat-icon>account_circle</mat-icon>

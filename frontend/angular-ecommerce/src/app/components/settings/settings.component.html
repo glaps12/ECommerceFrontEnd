@@ -8,12 +8,9 @@
     <!-- Local Account Sidebar -->
     <mat-sidenav mode="side" opened class="glass-sidebar">
       <div class="sidebar-brand-area">
-        <div class="avatar-gradient">
-          <span>{{ authService.userName$.value?.charAt(0) || 'U' }}</span>
-        </div>
         <div class="user-meta">
           <span class="meta-welcome">Welcome back,</span>
-          <h2 class="meta-name">{{ authService.userName$ | async }}</h2>
+          <h2 class="meta-name">{{ authService.userName$ | async }} {{ authService.userLastName$ | async }}</h2>
         </div>
       </div>
 
@@ -84,24 +81,62 @@
 
               <mat-card-content>
                 <form [formGroup]="settingsForm" (ngSubmit)="onSubmit()" class="premium-form">
+                  <div class="inline-message error animate-slide-up" *ngIf="errorMessage">
+                    <mat-icon>error_outline</mat-icon>
+                    <span>{{ errorMessage }}</span>
+                  </div>
+
                   <div class="form-grid">
                     <mat-form-field appearance="fill" class="glass-field">
                       <mat-label>First Name</mat-label>
                       <input matInput formControlName="firstName" placeholder="e.g. John" />
+                      <mat-error *ngIf="settingsForm.get('firstName')?.hasError('required')">First name is required</mat-error>
+                      <mat-error *ngIf="settingsForm.get('firstName')?.hasError('minlength')">Must be at least 2 characters</mat-error>
                     </mat-form-field>
-
+  
                     <mat-form-field appearance="fill" class="glass-field">
                       <mat-label>Last Name</mat-label>
                       <input matInput formControlName="lastName" placeholder="e.g. Doe" />
+                      <mat-error *ngIf="settingsForm.get('lastName')?.hasError('required')">Last name is required</mat-error>
+                      <mat-error *ngIf="settingsForm.get('lastName')?.hasError('minlength')">Must be at least 2 characters</mat-error>
                     </mat-form-field>
                   </div>
 
+                  <div class="form-grid">
+                    <div style="display: flex; gap: 16px;">
+                      <mat-form-field appearance="fill" class="glass-field" style="width: 120px;">
+                        <mat-label>Region</mat-label>
+                        <mat-select disabled value="+90">
+                          <mat-option value="+90">🇹🇷 +90</mat-option>
+                        </mat-select>
+                      </mat-form-field>
+
+                      <mat-form-field appearance="fill" class="glass-field" style="flex: 1;">
+                        <mat-label>Phone Number</mat-label>
+                        <input matInput formControlName="phoneNumber" placeholder="05XX XXX XX XX" maxlength="11" />
+                        <mat-icon matSuffix>phone</mat-icon>
+                        <mat-error *ngIf="settingsForm.get('phoneNumber')?.hasError('required')">Phone number is required</mat-error>
+                        <mat-error *ngIf="settingsForm.get('phoneNumber')?.hasError('pattern')">Must be 11 digits</mat-error>
+                      </mat-form-field>
+                    </div>
+
+                    <mat-form-field appearance="fill" class="glass-field">
+                      <mat-label>Birth Date</mat-label>
+                      <input matInput [matDatepicker]="picker" formControlName="birthDate">
+                      <mat-hint>MM/DD/YYYY</mat-hint>
+                      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                      <mat-datepicker #picker></mat-datepicker>
+                    </mat-form-field>
+                  </div>
+  
                   <mat-form-field appearance="fill" class="glass-field wide">
                     <mat-label>Email Address</mat-label>
                     <input matInput formControlName="email" type="email" />
                     <mat-icon matSuffix>alternate_email</mat-icon>
+                    <mat-error *ngIf="settingsForm.get('email')?.hasError('required')">Email is required</mat-error>
+                    <mat-error *ngIf="settingsForm.get('email')?.hasError('email')">Please enter a valid email</mat-error>
                   </mat-form-field>
-
+  
                   <div class="premium-actions">
                     <button mat-flat-button class="gradient-btn" type="submit" [disabled]="isLoading">
                       <mat-spinner diameter="20" *ngIf="isLoading"></mat-spinner>

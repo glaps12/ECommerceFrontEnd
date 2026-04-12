@@ -27,6 +27,26 @@
   min-width: 0;
 }
 
+.toolbar-brand-clickable {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: 16px;
+  cursor: pointer;
+  padding: 8px 16px;
+  border-radius: 12px;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.toolbar-brand-clickable:hover {
+  background-color: color-mix(in srgb, var(--mat-sys-on-surface) 5%, transparent);
+  transform: scale(1.02);
+}
+
+.toolbar-brand-clickable:active {
+  transform: scale(0.98);
+}
+
 .toolbar-brand {
   display: flex;
   align-items: center;
