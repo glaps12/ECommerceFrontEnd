@@ -20,12 +20,15 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatTabsModule } from '@angular/material/tabs';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 
 const MODULES = [
   LayoutModule, ScrollingModule, MatBadgeModule, MatButtonModule, MatCardModule, MatDividerModule,
   MatFormFieldModule, MatIconModule, MatInputModule, MatListModule, MatPaginatorModule,
   MatMenuModule, MatProgressSpinnerModule, MatSelectModule, MatSidenavModule, MatSnackBarModule, MatTableModule,
   MatToolbarModule, MatCheckboxModule, MatTooltipModule, MatTabsModule,
+  MatDatepickerModule, MatNativeDateModule
 ];
 
 @NgModule({ imports: MODULES, exports: MODULES })

@@ -168,8 +168,6 @@ export class LoginComponent {
         next: (res) => {
           this.isLoading = false;
           if (res.success) {
-            this.successMessage = `Welcome, ${res.firstName}!`;
-            this.snackBar.open(this.successMessage, '🎉', { duration: 3000, panelClass: ['success-snackbar'] });
             this.router.navigate(['/products']);
           } else {
             this.errorMessage = res.message;

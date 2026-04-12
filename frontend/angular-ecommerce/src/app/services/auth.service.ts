@@ -9,6 +9,9 @@ export interface AuthResponse {
   message: string;
   email: string | null;
   firstName: string | null;
+  lastName: string | null;
+  phoneNumber: string | null;
+  birthDate: string | null;
 }
 
 export interface SignupData {
@@ -27,11 +30,14 @@ const AUTH_KEY = 'brookyshop-auth';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private readonly apiUrl = 'http://127.0.0.1:8080/api/auth';
+  private readonly apiUrl = 'http://localhost:8080/api/auth';
   private readonly router = inject(Router);
 
   readonly isLoggedIn$ = new BehaviorSubject<boolean>(false);
   readonly userName$ = new BehaviorSubject<string | null>(null);
+  readonly userLastName$ = new BehaviorSubject<string | null>(null);
+  readonly userPhone$ = new BehaviorSubject<string | null>(null);
+  readonly userBirthDate$ = new BehaviorSubject<string | null>(null);
   readonly userEmail$ = new BehaviorSubject<string | null>(null);
 
   constructor(
@@ -45,6 +51,9 @@ export class AuthService {
           const data = JSON.parse(stored);
           this.isLoggedIn$.next(true);
           this.userName$.next(data.firstName ?? null);
+          this.userLastName$.next(data.lastName ?? null);
+          this.userPhone$.next(data.phoneNumber ?? null);
+          this.userBirthDate$.next(data.birthDate ?? null);
           this.userEmail$.next(data.email ?? null);
         } catch {
           localStorage.removeItem(AUTH_KEY);
@@ -61,22 +70,61 @@ export class AuthService {
     return this.http.post<AuthResponse>(`${this.apiUrl}/login`, data).pipe(
       tap((res) => {
         if (res.success && isPlatformBrowser(this.platformId)) {
-          localStorage.setItem(AUTH_KEY, JSON.stringify({ email: res.email, firstName: res.firstName }));
+          localStorage.setItem(AUTH_KEY, JSON.stringify({ 
+            email: res.email, 
+            firstName: res.firstName, 
+            lastName: res.lastName,
+            phoneNumber: res.phoneNumber,
+            birthDate: res.birthDate
+          }));
           this.isLoggedIn$.next(true);
           this.userName$.next(res.firstName);
+          this.userLastName$.next(res.lastName);
+          this.userPhone$.next(res.phoneNumber);
+          this.userBirthDate$.next(res.birthDate);
           this.userEmail$.next(res.email);
         }
       }),
     );
   }
 
-  updateSettings(data: { email: string; firstName: string; lastName: string; currentPassword?: string; newPassword?: string }): Observable<AuthResponse> {
+  getProfile(email: string): Observable<AuthResponse> {
+    return this.http.get<AuthResponse>(`${this.apiUrl}/profile?email=${email}`).pipe(
+      tap((res) => {
+        if (res.success && isPlatformBrowser(this.platformId)) {
+          localStorage.setItem(AUTH_KEY, JSON.stringify({ 
+            email: res.email, 
+            firstName: res.firstName, 
+            lastName: res.lastName,
+            phoneNumber: res.phoneNumber,
+            birthDate: res.birthDate
+          }));
+          this.userName$.next(res.firstName);
+          this.userLastName$.next(res.lastName);
+          this.userPhone$.next(res.phoneNumber);
+          this.userBirthDate$.next(res.birthDate);
+          this.userEmail$.next(res.email);
+        }
+      })
+    );
+  }
+
+  updateSettings(data: { email: string; firstName: string; lastName: string; phoneNumber?: string; birthDate?: string; currentPassword?: string; newPassword?: string }): Observable<AuthResponse> {
     const currentEmail = this.userEmail$.value;
     return this.http.put<AuthResponse>(`${this.apiUrl}/update?currentEmail=${currentEmail}`, data).pipe(
       tap((res) => {
         if (res.success && isPlatformBrowser(this.platformId)) {
-          localStorage.setItem(AUTH_KEY, JSON.stringify({ email: res.email, firstName: res.firstName }));
+          localStorage.setItem(AUTH_KEY, JSON.stringify({ 
+            email: res.email, 
+            firstName: res.firstName, 
+            lastName: res.lastName,
+            phoneNumber: res.phoneNumber,
+            birthDate: res.birthDate
+          }));
           this.userName$.next(res.firstName);
+          this.userLastName$.next(res.lastName);
+          this.userPhone$.next(res.phoneNumber);
+          this.userBirthDate$.next(res.birthDate);
           this.userEmail$.next(res.email);
         }
       })
@@ -93,6 +141,9 @@ export class AuthService {
     }
     this.isLoggedIn$.next(false);
     this.userName$.next(null);
+    this.userLastName$.next(null);
+    this.userPhone$.next(null);
+    this.userBirthDate$.next(null);
     this.userEmail$.next(null);
     this.router.navigate(['/login']);
   }

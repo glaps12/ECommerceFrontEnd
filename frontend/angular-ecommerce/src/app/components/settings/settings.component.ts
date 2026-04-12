@@ -21,6 +21,8 @@ export class SettingsComponent implements OnInit {
     email: ['', [Validators.required, Validators.email]],
     firstName: ['', [Validators.required, Validators.minLength(2)]],
     lastName: ['', [Validators.required, Validators.minLength(2)]],
+    phoneNumber: ['', [Validators.required, Validators.pattern('^[0-9]{11}$')]],
+    birthDate: [''],
     currentPassword: [''],
     newPassword: ['', [Validators.minLength(6)]],
     confirmPassword: ['']
@@ -34,9 +36,38 @@ export class SettingsComponent implements OnInit {
     const currentName = this.authService.userName$.value;
     
     if (currentEmail) {
+      let phoneWithoutRegion = this.authService.userPhone$.value || '';
+      if (phoneWithoutRegion.startsWith('+90')) {
+        phoneWithoutRegion = phoneWithoutRegion.substring(3);
+      }
+
+      // Optimistic patch from local storage
       this.settingsForm.patchValue({ 
         email: currentEmail,
-        firstName: currentName // firstName is currently stored in userName$
+        firstName: currentName || '',
+        lastName: this.authService.userLastName$.value || '',
+        phoneNumber: phoneWithoutRegion,
+        birthDate: this.authService.userBirthDate$.value || ''
+      });
+
+      // Synchronize dynamically with backend
+      this.authService.getProfile(currentEmail).subscribe({
+        next: (res) => {
+          if (res.success) {
+            let backendPhone = res.phoneNumber || '';
+            if (backendPhone.startsWith('+90')) {
+              backendPhone = backendPhone.substring(3);
+            }
+            this.settingsForm.patchValue({
+              email: res.email,
+              firstName: res.firstName || '',
+              lastName: res.lastName || '',
+              phoneNumber: backendPhone,
+              birthDate: res.birthDate || ''
+            });
+          }
+        },
+        error: (err) => console.error('Failed to sync profile', err)
       });
     } else {
       this.router.navigate(['/login']);
@@ -55,10 +86,11 @@ export class SettingsComponent implements OnInit {
   onSubmit(): void {
     if (this.settingsForm.invalid) {
       this.settingsForm.markAllAsTouched();
+      this.snackBar.open('Please correct the errors in the form before saving.', 'OK', { duration: 4000 });
       return;
     }
 
-    const { email, firstName, lastName, currentPassword, newPassword, confirmPassword } = this.settingsForm.value;
+    const { email, firstName, lastName, phoneNumber, birthDate, currentPassword, newPassword, confirmPassword } = this.settingsForm.value;
 
     if (newPassword && newPassword !== confirmPassword) {
       this.snackBar.open('Passwords do not match.', 'OK', { duration: 3000 });
@@ -68,11 +100,22 @@ export class SettingsComponent implements OnInit {
     this.isLoading = true;
     this.errorMessage = '';
 
-    this.authService.updateSettings({ email, firstName, lastName, currentPassword, newPassword }).subscribe({
+    const birthDateISO = birthDate ? new Date(birthDate).toISOString().split('T')[0] : undefined;
+    const finalCurrentPassword = currentPassword ? currentPassword : undefined;
+    const finalNewPassword = newPassword ? newPassword : undefined;
+    const formattedPhone = phoneNumber ? `+90${phoneNumber}` : undefined;
+
+    this.authService.updateSettings({ 
+      email, firstName, lastName, 
+      phoneNumber: formattedPhone, 
+      birthDate: birthDateISO, 
+      currentPassword: finalCurrentPassword, 
+      newPassword: finalNewPassword 
+    }).subscribe({
       next: (res) => {
         this.isLoading = false;
         if (res.success) {
-          this.snackBar.open('Profile updated successfully!', '🎉', { duration: 3000 });
+          this.snackBar.open('Saved successfully!', 'OK', { duration: 4000 });
           this.settingsForm.get('currentPassword')?.reset();
           this.settingsForm.get('newPassword')?.reset();
           this.settingsForm.get('confirmPassword')?.reset();
@@ -82,8 +125,10 @@ export class SettingsComponent implements OnInit {
       },
       error: (err) => {
         this.isLoading = false;
-        this.errorMessage = err.error?.message || 'Failed to update profile.';
-        this.snackBar.open(this.errorMessage, 'OK', { duration: 4000 });
+        console.error('Profile update error:', err);
+        // Try to get message from backend error response
+        this.errorMessage = err.error?.message || err.message || 'Failed to update profile.';
+        this.snackBar.open(this.errorMessage, 'OK', { duration: 5000 });
       }
     });
   }
