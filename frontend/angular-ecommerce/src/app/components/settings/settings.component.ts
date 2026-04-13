@@ -1,5 +1,5 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
@@ -21,7 +21,7 @@ export class SettingsComponent implements OnInit {
     email: ['', [Validators.required, Validators.email]],
     firstName: ['', [Validators.required, Validators.minLength(2)]],
     lastName: ['', [Validators.required, Validators.minLength(2)]],
-    phoneNumber: ['', [Validators.required, Validators.pattern('^[0-9]{11}$')]],
+    phoneNumber: ['', [Validators.required, this.turkishPhoneValidator()]],
     birthDate: [''],
     currentPassword: [''],
     newPassword: ['', [Validators.minLength(6)]],
@@ -83,17 +83,38 @@ export class SettingsComponent implements OnInit {
     this.activeSection = sections[event.index];
   }
 
+  turkishPhoneValidator(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const value = control.value;
+      if (!value) return null;
+      if (value.startsWith('0')) {
+        return { startsWithZero: true };
+      }
+      return /^5[0-9]{9}$/.test(value) ? null : { pattern: true };
+    };
+  }
+
   onSubmit(): void {
     if (this.settingsForm.invalid) {
       this.settingsForm.markAllAsTouched();
-      this.snackBar.open('Please correct the errors in the form before saving.', 'OK', { duration: 4000 });
+      this.snackBar.open('Please correct the errors in the form before saving.', 'OK', { 
+        duration: 4000, 
+        panelClass: ['error-snackbar'],
+        verticalPosition: 'top',
+        horizontalPosition: 'right'
+      });
       return;
     }
 
     const { email, firstName, lastName, phoneNumber, birthDate, currentPassword, newPassword, confirmPassword } = this.settingsForm.value;
 
     if (newPassword && newPassword !== confirmPassword) {
-      this.snackBar.open('Passwords do not match.', 'OK', { duration: 3000 });
+      this.snackBar.open('Passwords do not match.', 'OK', { 
+        duration: 3000, 
+        panelClass: ['error-snackbar'],
+        verticalPosition: 'top',
+        horizontalPosition: 'right'
+      });
       return;
     }
 
@@ -115,7 +136,12 @@ export class SettingsComponent implements OnInit {
       next: (res) => {
         this.isLoading = false;
         if (res.success) {
-          this.snackBar.open('Saved successfully!', 'OK', { duration: 4000 });
+          this.snackBar.open('Saved successfully!', 'OK', { 
+            duration: 4000, 
+            panelClass: ['success-snackbar'],
+            verticalPosition: 'top',
+            horizontalPosition: 'right'
+          });
           this.settingsForm.get('currentPassword')?.reset();
           this.settingsForm.get('newPassword')?.reset();
           this.settingsForm.get('confirmPassword')?.reset();
@@ -128,7 +154,12 @@ export class SettingsComponent implements OnInit {
         console.error('Profile update error:', err);
         // Try to get message from backend error response
         this.errorMessage = err.error?.message || err.message || 'Failed to update profile.';
-        this.snackBar.open(this.errorMessage, 'OK', { duration: 5000 });
+        this.snackBar.open(this.errorMessage, 'OK', { 
+          duration: 5000, 
+          panelClass: ['error-snackbar'],
+          verticalPosition: 'top',
+          horizontalPosition: 'right'
+        });
       }
     });
   }

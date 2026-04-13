@@ -113,10 +113,11 @@
 
                       <mat-form-field appearance="fill" class="glass-field" style="flex: 1;">
                         <mat-label>Phone Number</mat-label>
-                        <input matInput formControlName="phoneNumber" placeholder="05XX XXX XX XX" maxlength="11" />
+                        <input matInput formControlName="phoneNumber" placeholder="5XX XXX XX XX" maxlength="10" />
                         <mat-icon matSuffix>phone</mat-icon>
                         <mat-error *ngIf="settingsForm.get('phoneNumber')?.hasError('required')">Phone number is required</mat-error>
-                        <mat-error *ngIf="settingsForm.get('phoneNumber')?.hasError('pattern')">Must be 11 digits</mat-error>
+                        <mat-error *ngIf="settingsForm.get('phoneNumber')?.hasError('startsWithZero')">Phone number cannot start with 0</mat-error>
+                        <mat-error *ngIf="settingsForm.get('phoneNumber')?.hasError('pattern')">Must be 10 digits and start with 5</mat-error>
                       </mat-form-field>
                     </div>
 
