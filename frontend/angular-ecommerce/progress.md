@@ -39,6 +39,13 @@
     - **Password Verification**: Enhanced password updates to require `currentPassword` verification. Updated `UpdateUserRequest` DTO, backend `AuthController`, and frontend `AuthService` to support this security-first flow.
     - **Profile Persistence**: Wired "Personal Details" form to persist `firstName` and `lastName` updates to the backend MySQL database.
     - **Session Logout**: Refined `logout()` method to clear all authentication state and automatically redirect the user to the `/login` page for a seamless exit experience.
+- [x] **Advanced Profile & User Settings (2026-04-12)**:
+    - **Data Persistence & Hydration**: Implemented state synchronization for user surnames, phone numbers, and birth dates. Resolved the "missing surname" UI bug by ensuring full `User` object mapping from backend to frontend.
+    - **Smart Inputs**: Added a specialized phone number input field that automatically handles the `+90` region prefix, ensuring only 10 digits (starting with 5) are entered and correctly formatted for persistence. Added validation to prevent leading zeros.
+    - **Security Protocols**: Refined the password change mechanism to be optional; `currentPassword` is only required if a `newPassword` is provided, with proper backend validation.
+    - **UI Cleanup & Premium Reskin**: Streamlined the settings page by removing redundant "Personal Info" sub-headers. Re-engineered the CSS form styling, adding premium Indigo gradients, improved form field legibility in Dark Mode, sleek focus borders, and elevated button animations. Upgraded global snackbars (`success-snackbar` and `error-snackbar`) to provide clear visual feedback (green/red) at the top-right of the screen during profile modifications.
+    - **Live Sync**: Profile forms now optimistically load from local storage and then perform a silent background refresh from the backend API to ensure data freshness.
+
 
 ## Do now
 - (none)
