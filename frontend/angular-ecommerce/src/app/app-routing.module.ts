@@ -5,10 +5,12 @@ import { ProductDetailsComponent } from './components/product-details/product-de
 import { CartDetailsComponent } from './components/cart-details/cart-details.component';
 import { LoginComponent } from './components/login/login.component';
 import { SettingsComponent } from './components/settings/settings.component';
+import { CheckoutComponent } from './components/checkout/checkout.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'settings', component: SettingsComponent },
+  { path: 'checkout', component: CheckoutComponent },
   { path: 'search/:keyword', component: ProductListComponent },
   { path: 'category/:id', component: ProductListComponent },
   { path: 'category/', component: ProductListComponent },

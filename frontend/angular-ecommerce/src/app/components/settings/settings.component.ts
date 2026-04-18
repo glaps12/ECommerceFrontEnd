@@ -3,6 +3,9 @@ import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors, 
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
+import { AddressService } from '../../services/address.service';
+import { Address } from '../../common/address';
+import { TURKISH_CITIES } from '../../common/turkish-cities';
 
 @Component({
   selector: 'app-settings',
@@ -14,8 +17,28 @@ export class SettingsComponent implements OnInit {
   readonly authService = inject(AuthService);
   private readonly router = inject(Router);
   private readonly snackBar = inject(MatSnackBar);
+  private readonly addressService = inject(AddressService);
 
   activeSection: 'profile' | 'orders' | 'addresses' | 'security' = 'profile';
+
+  cities = TURKISH_CITIES;
+  savedAddresses: Address[] = [];
+  isEditingAddress = false;
+  editingAddressId: number | null = null;
+  isAddressLoading = false;
+
+  addressForm: FormGroup = this.fb.group({
+    label: ['', Validators.required],
+    fullName: ['', [Validators.required, Validators.minLength(3)]],
+    phoneNumber: ['', [Validators.required]],
+    city: ['', Validators.required],
+    district: [''],
+    neighborhood: [''],
+    street: [''],
+    buildingNo: [''],
+    apartmentNo: [''],
+    postalCode: ['']
+  });
 
   settingsForm: FormGroup = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
@@ -50,6 +73,8 @@ export class SettingsComponent implements OnInit {
         birthDate: this.authService.userBirthDate$.value || ''
       });
 
+      this.loadAddresses(currentEmail);
+
       // Synchronize dynamically with backend
       this.authService.getProfile(currentEmail).subscribe({
         next: (res) => {
@@ -83,6 +108,75 @@ export class SettingsComponent implements OnInit {
     this.activeSection = sections[event.index];
   }
 
+  loadAddresses(email: string) {
+    this.addressService.getAddresses(email).subscribe({
+      next: (addrs) => this.savedAddresses = addrs,
+      error: (err) => console.error('Failed to load addresses', err)
+    });
+  }
+
+  addNewAddress() {
+    this.isEditingAddress = true;
+    this.editingAddressId = null;
+    this.addressForm.reset();
+  }
+
+  editAddress(addr: Address) {
+    this.isEditingAddress = true;
+    this.editingAddressId = addr.id || null;
+    this.addressForm.patchValue(addr);
+  }
+
+  cancelEditAddress() {
+    this.isEditingAddress = false;
+    this.editingAddressId = null;
+  }
+
+  saveAddress() {
+    if (this.addressForm.invalid) {
+      this.addressForm.markAllAsTouched();
+      return;
+    }
+    const email = this.authService.userEmail$.value;
+    if (!email) return;
+
+    this.isAddressLoading = true;
+    const addrData = this.addressForm.value as Address;
+
+    if (this.editingAddressId) {
+      this.addressService.updateAddress(this.editingAddressId, email, addrData).subscribe({
+        next: () => {
+          this.snackBar.open('Address updated!', 'OK', { duration: 3000, verticalPosition: 'top', horizontalPosition: 'center', panelClass: ['success-snackbar'] });
+          this.isAddressLoading = false;
+          this.isEditingAddress = false;
+          this.loadAddresses(email);
+        },
+        error: () => this.isAddressLoading = false
+      });
+    } else {
+      this.addressService.createAddress(email, addrData).subscribe({
+        next: () => {
+          this.snackBar.open('Address added!', 'OK', { duration: 3000, verticalPosition: 'top', horizontalPosition: 'center', panelClass: ['success-snackbar'] });
+          this.isAddressLoading = false;
+          this.isEditingAddress = false;
+          this.loadAddresses(email);
+        },
+        error: () => this.isAddressLoading = false
+      });
+    }
+  }
+
+  deleteAddress(id: number) {
+    const email = this.authService.userEmail$.value;
+    if (!email || !id) return;
+    this.addressService.deleteAddress(id, email).subscribe({
+      next: () => {
+        this.snackBar.open('Address deleted', 'OK', { duration: 3000, verticalPosition: 'top', horizontalPosition: 'center' });
+        this.loadAddresses(email);
+      }
+    });
+  }
+
   turkishPhoneValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       const value = control.value;
@@ -101,7 +195,7 @@ export class SettingsComponent implements OnInit {
         duration: 4000, 
         panelClass: ['error-snackbar'],
         verticalPosition: 'top',
-        horizontalPosition: 'right'
+        horizontalPosition: 'center'
       });
       return;
     }
@@ -113,7 +207,7 @@ export class SettingsComponent implements OnInit {
         duration: 3000, 
         panelClass: ['error-snackbar'],
         verticalPosition: 'top',
-        horizontalPosition: 'right'
+        horizontalPosition: 'center'
       });
       return;
     }
@@ -140,7 +234,7 @@ export class SettingsComponent implements OnInit {
             duration: 4000, 
             panelClass: ['success-snackbar'],
             verticalPosition: 'top',
-            horizontalPosition: 'right'
+            horizontalPosition: 'center'
           });
           this.settingsForm.get('currentPassword')?.reset();
           this.settingsForm.get('newPassword')?.reset();
@@ -158,7 +252,7 @@ export class SettingsComponent implements OnInit {
           duration: 5000, 
           panelClass: ['error-snackbar'],
           verticalPosition: 'top',
-          horizontalPosition: 'right'
+          horizontalPosition: 'center'
         });
       }
     });

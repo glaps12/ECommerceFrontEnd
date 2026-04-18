@@ -3,6 +3,7 @@ import { LayoutModule } from '@angular/cdk/layout';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonModule } from '@angular/material/button';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -12,9 +13,11 @@ import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatStepperModule } from '@angular/material/stepper';
 import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -24,9 +27,10 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 
 const MODULES = [
-  LayoutModule, ScrollingModule, MatBadgeModule, MatButtonModule, MatCardModule, MatDividerModule,
-  MatFormFieldModule, MatIconModule, MatInputModule, MatListModule, MatPaginatorModule,
-  MatMenuModule, MatProgressSpinnerModule, MatSelectModule, MatSidenavModule, MatSnackBarModule, MatTableModule,
+  LayoutModule, ScrollingModule, MatBadgeModule, MatButtonModule, MatButtonToggleModule,
+  MatCardModule, MatDividerModule, MatFormFieldModule, MatIconModule, MatInputModule,
+  MatListModule, MatPaginatorModule, MatMenuModule, MatProgressSpinnerModule, MatRadioModule,
+  MatSelectModule, MatSidenavModule, MatSnackBarModule, MatStepperModule, MatTableModule,
   MatToolbarModule, MatCheckboxModule, MatTooltipModule, MatTabsModule,
   MatDatepickerModule, MatNativeDateModule
 ];

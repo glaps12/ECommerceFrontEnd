@@ -1,4 +1,5 @@
 import { NgModule } from '@angular/core';
+import { MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material/snack-bar';
 import { BrowserModule, provideClientHydration } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
@@ -16,6 +17,9 @@ import { CartDetailsComponent } from './components/cart-details/cart-details.com
 import { SharedMaterialModule } from './shared-material.module';
 import { LoginComponent } from './components/login/login.component';
 import { SettingsComponent } from './components/settings/settings.component';
+import { CheckoutComponent } from './components/checkout/checkout.component';
+import { TranslateModule } from '@ngx-translate/core';
+import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
 
 @NgModule({
   declarations: [
@@ -28,6 +32,7 @@ import { SettingsComponent } from './components/settings/settings.component';
     CartDetailsComponent,
     LoginComponent,
     SettingsComponent,
+    CheckoutComponent,
   ],
   imports: [
     BrowserModule,
@@ -37,8 +42,20 @@ import { SettingsComponent } from './components/settings/settings.component';
     FormsModule,
     ReactiveFormsModule,
     CommonModule,
+    TranslateModule.forRoot({
+      defaultLanguage: 'tr',
+      loader: provideTranslateHttpLoader({
+        prefix: './i18n/',
+        suffix: '.json'
+      })
+    }),
   ],
-  providers: [provideClientHydration(), provideHttpClient(withFetch()), ProductService],
+  providers: [
+    provideClientHydration(), 
+    provideHttpClient(withFetch()), 
+    ProductService,
+    { provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: { horizontalPosition: 'center', verticalPosition: 'top', duration: 4000 } }
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

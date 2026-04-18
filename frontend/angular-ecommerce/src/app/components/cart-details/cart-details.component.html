@@ -1,11 +1,11 @@
 <div class="cart-page">
-  <h2 class="cart-heading">Shopping Cart</h2>
+  <h2 class="cart-heading">{{ 'CART.TITLE' | translate }}</h2>
 
   <ng-container *ngIf="cartItems.length; else emptyCart">
     <mat-card class="cart-table-card" appearance="outlined">
       <table mat-table [dataSource]="cartItems" class="cart-table">
         <ng-container matColumnDef="product">
-          <th mat-header-cell *matHeaderCellDef>Product</th>
+          <th mat-header-cell *matHeaderCellDef>{{ 'CART.PRODUCT' | translate }}</th>
           <td mat-cell *matCellDef="let item">
             <div class="product-cell">
               <img [src]="item.imageUrl" [alt]="item.name" class="thumb" />
@@ -15,14 +15,14 @@
         </ng-container>
 
         <ng-container matColumnDef="quantity">
-          <th mat-header-cell *matHeaderCellDef class="text-center">Quantity</th>
+          <th mat-header-cell *matHeaderCellDef class="text-center">{{ 'CART.QUANTITY' | translate }}</th>
           <td mat-cell *matCellDef="let item" class="text-center">
             <div class="qty-group">
-              <button mat-icon-button type="button" (click)="decrementQuantity(item)" aria-label="Decrease quantity">
+              <button mat-icon-button type="button" (click)="decrementQuantity(item)" [attr.aria-label]="'CART.DECREASE' | translate">
                 <mat-icon>remove</mat-icon>
               </button>
               <span class="qty-value">{{ item.quantity }}</span>
-              <button mat-icon-button type="button" (click)="incrementQuantity(item)" aria-label="Increase quantity">
+              <button mat-icon-button type="button" (click)="incrementQuantity(item)" [attr.aria-label]="'CART.INCREASE' | translate">
                 <mat-icon>add</mat-icon>
               </button>
             </div>
@@ -30,21 +30,21 @@
         </ng-container>
 
         <ng-container matColumnDef="unitPrice">
-          <th mat-header-cell *matHeaderCellDef class="text-end">Unit price</th>
-          <td mat-cell *matCellDef="let item" class="text-end">{{ item.unitPrice | currency: "USD" }}</td>
+          <th mat-header-cell *matHeaderCellDef class="text-end">{{ 'CART.UNIT_PRICE' | translate }}</th>
+          <td mat-cell *matCellDef="let item" class="text-end">{{ item.unitPrice | currency: "TRY":"₺" }}</td>
         </ng-container>
 
         <ng-container matColumnDef="subtotal">
-          <th mat-header-cell *matHeaderCellDef class="text-end">Subtotal</th>
+          <th mat-header-cell *matHeaderCellDef class="text-end">{{ 'CART.SUBTOTAL' | translate }}</th>
           <td mat-cell *matCellDef="let item" class="text-end">
-            {{ item.unitPrice * item.quantity | currency: "USD" }}
+            {{ item.unitPrice * item.quantity | currency: "TRY":"₺" }}
           </td>
         </ng-container>
 
         <ng-container matColumnDef="actions">
           <th mat-header-cell *matHeaderCellDef></th>
           <td mat-cell *matCellDef="let item" class="text-end">
-            <button mat-button color="warn" type="button" (click)="removeItem(item)">Remove</button>
+            <button mat-button color="warn" type="button" (click)="removeItem(item)">{{ 'CART.REMOVE' | translate }}</button>
           </td>
         </ng-container>
 
@@ -55,23 +55,29 @@
 
     <mat-card class="totals-card" appearance="outlined">
       <mat-card-actions align="end" class="cart-actions">
-        <button mat-stroked-button color="warn" type="button" (click)="clearCart()">Clear cart</button>
+        <button mat-stroked-button color="warn" type="button" (click)="clearCart()">{{ 'CART.CLEAR' | translate }}</button>
       </mat-card-actions>
       <mat-card-content>
-        <div class="totals-row"><span>Items</span><span>{{ totalQuantity }}</span></div>
-        <div class="totals-row"><span>Subtotal</span><span>{{ totalPrice | currency: "USD" }}</span></div>
-        <div class="totals-row shipping"><span>Shipping</span><span>Free</span></div>
+        <div class="totals-row"><span>{{ 'CART.ITEMS' | translate }}</span><span>{{ totalQuantity }}</span></div>
+        <div class="totals-row"><span>{{ 'CART.SUBTOTAL' | translate }}</span><span>{{ totalPrice | currency: "TRY":"₺" }}</span></div>
+        <div class="totals-row shipping"><span>{{ 'CART.SHIPPING' | translate }}</span><span>{{ 'CART.FREE' | translate }}</span></div>
         <mat-divider></mat-divider>
-        <div class="totals-row total"><span>Total due</span><span>{{ totalPrice | currency: "USD" }}</span></div>
+        <div class="totals-row total"><span>{{ 'CART.TOTAL' | translate }}</span><span>{{ totalPrice | currency: "TRY":"₺" }}</span></div>
       </mat-card-content>
+      <mat-card-actions align="end" class="checkout-actions">
+        <button mat-flat-button color="primary" routerLink="/checkout" class="checkout-btn">
+          <mat-icon>shopping_cart_checkout</mat-icon>
+          {{ 'CART.CHECKOUT' | translate }}
+        </button>
+      </mat-card-actions>
     </mat-card>
   </ng-container>
 
   <ng-template #emptyCart>
     <mat-card class="empty-card" appearance="outlined">
-      <mat-card-content>Your cart is empty.</mat-card-content>
+      <mat-card-content>{{ 'CART.EMPTY' | translate }}</mat-card-content>
       <mat-card-actions>
-        <button mat-flat-button color="primary" routerLink="/products">Continue shopping</button>
+        <button mat-flat-button color="primary" routerLink="/products">{{ 'CART.CONTINUE_SHOPPING' | translate }}</button>
       </mat-card-actions>
     </mat-card>
   </ng-template>

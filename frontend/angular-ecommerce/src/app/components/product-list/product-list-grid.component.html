@@ -12,15 +12,15 @@
             <h3 class="card-title">{{ p.name }}</h3>
           </a>
           <div class="card-meta">
-            <span class="card-price">{{ p.unitPrice | currency: "USD" }}</span>
-            <span class="card-stock" *ngIf="p.unitsInStock > 0">In Stock</span>
-            <span class="card-stock out" *ngIf="p.unitsInStock === 0">Out of Stock</span>
+            <span class="card-price">{{ p.unitPrice | currency: "TRY":"₺" }}</span>
+            <span class="card-stock" *ngIf="p.unitsInStock > 0">{{ 'PRODUCT_DETAILS.IN_STOCK' | translate }}</span>
+            <span class="card-stock out" *ngIf="p.unitsInStock === 0">{{ 'PRODUCT_DETAILS.OUT_OF_STOCK' | translate }}</span>
           </div>
         </mat-card-content>
         <mat-card-actions class="card-actions">
           <button mat-flat-button color="primary" type="button" (click)="addToCart(p)" class="add-cart-btn">
             <mat-icon>add_shopping_cart</mat-icon>
-            Add to cart
+            {{ 'PRODUCT_LIST.ADD_TO_CART' | translate }}
           </button>
         </mat-card-actions>
       </mat-card>
@@ -29,7 +29,7 @@
 
   <p *ngIf="products.length === 0" class="empty-hint" role="status">
     <mat-icon class="empty-icon">inventory_2</mat-icon>
-    No products found.
+    {{ 'PRODUCT_LIST.NO_PRODUCTS' | translate }}
   </p>
 
   <!-- Custom pagination bar (avoids CDK overlay issues with mat-paginator select) -->
