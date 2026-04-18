@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { trigger, transition, style, animate, query, stagger } from '@angular/animations';
 import { AuthService } from '../../services/auth.service';
+import { CartService } from '../../services/cart.service';
 
 @Component({
   selector: 'app-login',
@@ -45,6 +46,7 @@ export class LoginComponent {
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
   private readonly snackBar = inject(MatSnackBar);
+  private readonly cartService = inject(CartService);
 
   isSignup = false;
   isVerification = false;
@@ -168,6 +170,10 @@ export class LoginComponent {
         next: (res) => {
           this.isLoading = false;
           if (res.success) {
+            // Load cart from server after login
+            if (res.email) {
+              this.cartService.loadCartFromServer(res.email);
+            }
             this.router.navigate(['/products']);
           } else {
             this.errorMessage = res.message;

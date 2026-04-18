@@ -9,44 +9,44 @@
     <mat-sidenav mode="side" opened class="glass-sidebar">
       <div class="sidebar-brand-area">
         <div class="user-meta">
-          <span class="meta-welcome">Welcome back,</span>
+          <span class="meta-welcome">{{ 'SETTINGS.WELCOME' | translate }}</span>
           <h2 class="meta-name">{{ authService.userName$ | async }} {{ authService.userLastName$ | async }}</h2>
         </div>
       </div>
 
       <mat-nav-list class="glass-nav-list">
         <div class="nav-group">
-          <div class="group-label">Purchases</div>
+          <div class="group-label">{{ 'SETTINGS.PURCHASES' | translate }}</div>
           <a mat-list-item (click)="setSection('orders')" [class.active]="activeSection === 'orders'">
             <mat-icon matListItemIcon class="nav-icon-main">shopping_bag</mat-icon>
-            <span matListItemTitle class="nav-title">My Orders</span>
-            <span matListItemLine class="nav-subtitle">View your order history</span>
+            <span matListItemTitle class="nav-title">{{ 'SETTINGS.MY_ORDERS' | translate }}</span>
+            <span matListItemLine class="nav-subtitle">{{ 'SETTINGS.ORDER_HISTORY' | translate }}</span>
           </a>
         </div>
 
         <div class="nav-group">
-          <div class="group-label">Settings</div>
+          <div class="group-label">{{ 'SETTINGS.SETTINGS_GROUP' | translate }}</div>
           <a mat-list-item (click)="setSection('profile')" [class.active]="activeSection === 'profile'">
             <mat-icon matListItemIcon class="nav-icon-main">manage_accounts</mat-icon>
-            <span matListItemTitle class="nav-title">Personal Info</span>
-            <span matListItemLine class="nav-subtitle">Update your profile</span>
+            <span matListItemTitle class="nav-title">{{ 'SETTINGS.PERSONAL_INFO' | translate }}</span>
+            <span matListItemLine class="nav-subtitle">{{ 'SETTINGS.UPDATE_PROFILE' | translate }}</span>
           </a>
           <a mat-list-item (click)="setSection('addresses')" [class.active]="activeSection === 'addresses'">
             <mat-icon matListItemIcon class="nav-icon-main">map</mat-icon>
-            <span matListItemTitle class="nav-title">My Addresses</span>
-            <span matListItemLine class="nav-subtitle">Shipping addresses</span>
+            <span matListItemTitle class="nav-title">{{ 'SETTINGS.ADDRESSES' | translate }}</span>
+            <span matListItemLine class="nav-subtitle">{{ 'SETTINGS.SHIPPING_ADDRESSES' | translate }}</span>
           </a>
           <a mat-list-item (click)="setSection('security')" [class.active]="activeSection === 'security'">
             <mat-icon matListItemIcon class="nav-icon-main">lock_reset</mat-icon>
-            <span matListItemTitle class="nav-title">Security</span>
-            <span matListItemLine class="nav-subtitle">Passwords & 2FA</span>
+            <span matListItemTitle class="nav-title">{{ 'SETTINGS.SECURITY' | translate }}</span>
+            <span matListItemLine class="nav-subtitle">{{ 'SETTINGS.PASSWORDS' | translate }}</span>
           </a>
         </div>
 
         <div class="sidebar-footer">
           <button mat-button class="logout-btn-glass" (click)="authService.logout()">
             <mat-icon>logout</mat-icon>
-            Logout session
+            {{ 'SETTINGS.LOGOUT' | translate }}
           </button>
         </div>
       </mat-nav-list>
@@ -57,8 +57,8 @@
         <!-- Dashboard Header -->
         <div class="dashboard-banner">
           <div class="banner-text">
-            <h1>Account Dashboard</h1>
-            <p>Manage your account settings and preferences in one place.</p>
+            <h1>{{ 'SETTINGS.DASHBOARD' | translate }}</h1>
+            <p>{{ 'SETTINGS.DASHBOARD_DESC' | translate }}</p>
           </div>
           <div class="banner-icon-bg">
             <mat-icon>settings</mat-icon>
@@ -74,8 +74,8 @@
                   <mat-icon>person</mat-icon>
                 </div>
                 <div class="header-text-group">
-                  <mat-card-title>Personal Details</mat-card-title>
-                  <mat-card-subtitle>Configure how you appear on the platform</mat-card-subtitle>
+                  <mat-card-title>{{ 'SETTINGS.PERSONAL_DETAILS' | translate }}</mat-card-title>
+                  <mat-card-subtitle>{{ 'SETTINGS.PERSONAL_SUBTITLE' | translate }}</mat-card-subtitle>
                 </div>
               </mat-card-header>
 
@@ -88,14 +88,14 @@
 
                   <div class="form-grid">
                     <mat-form-field appearance="fill" class="glass-field">
-                      <mat-label>First Name</mat-label>
+                      <mat-label>{{ 'SETTINGS.FIRST_NAME' | translate }}</mat-label>
                       <input matInput formControlName="firstName" placeholder="e.g. John" />
                       <mat-error *ngIf="settingsForm.get('firstName')?.hasError('required')">First name is required</mat-error>
                       <mat-error *ngIf="settingsForm.get('firstName')?.hasError('minlength')">Must be at least 2 characters</mat-error>
                     </mat-form-field>
   
                     <mat-form-field appearance="fill" class="glass-field">
-                      <mat-label>Last Name</mat-label>
+                      <mat-label>{{ 'SETTINGS.LAST_NAME' | translate }}</mat-label>
                       <input matInput formControlName="lastName" placeholder="e.g. Doe" />
                       <mat-error *ngIf="settingsForm.get('lastName')?.hasError('required')">Last name is required</mat-error>
                       <mat-error *ngIf="settingsForm.get('lastName')?.hasError('minlength')">Must be at least 2 characters</mat-error>
@@ -105,14 +105,14 @@
                   <div class="form-grid">
                     <div style="display: flex; gap: 16px;">
                       <mat-form-field appearance="fill" class="glass-field" style="width: 120px;">
-                        <mat-label>Region</mat-label>
+                        <mat-label>{{ 'SETTINGS.REGION' | translate }}</mat-label>
                         <mat-select disabled value="+90">
                           <mat-option value="+90">🇹🇷 +90</mat-option>
                         </mat-select>
                       </mat-form-field>
 
                       <mat-form-field appearance="fill" class="glass-field" style="flex: 1;">
-                        <mat-label>Phone Number</mat-label>
+                        <mat-label>{{ 'SETTINGS.PHONE' | translate }}</mat-label>
                         <input matInput formControlName="phoneNumber" placeholder="5XX XXX XX XX" maxlength="10" />
                         <mat-icon matSuffix>phone</mat-icon>
                         <mat-error *ngIf="settingsForm.get('phoneNumber')?.hasError('required')">Phone number is required</mat-error>
@@ -122,7 +122,7 @@
                     </div>
 
                     <mat-form-field appearance="fill" class="glass-field">
-                      <mat-label>Birth Date</mat-label>
+                      <mat-label>{{ 'SETTINGS.BIRTH_DATE' | translate }}</mat-label>
                       <input matInput [matDatepicker]="picker" formControlName="birthDate">
                       <mat-hint>MM/DD/YYYY</mat-hint>
                       <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
@@ -131,7 +131,7 @@
                   </div>
   
                   <mat-form-field appearance="fill" class="glass-field wide">
-                    <mat-label>Email Address</mat-label>
+                    <mat-label>{{ 'SETTINGS.EMAIL' | translate }}</mat-label>
                     <input matInput formControlName="email" type="email" />
                     <mat-icon matSuffix>alternate_email</mat-icon>
                     <mat-error *ngIf="settingsForm.get('email')?.hasError('required')">Email is required</mat-error>
@@ -141,7 +141,7 @@
                   <div class="premium-actions">
                     <button mat-flat-button class="gradient-btn" type="submit" [disabled]="isLoading">
                       <mat-spinner diameter="20" *ngIf="isLoading"></mat-spinner>
-                      <span *ngIf="!isLoading">Save Profile Changes</span>
+                      <span *ngIf="!isLoading">{{ 'SETTINGS.SAVE_PROFILE' | translate }}</span>
                     </button>
                   </div>
                 </form>
@@ -157,30 +157,30 @@
                   <mat-icon>lock</mat-icon>
                 </div>
                 <div class="header-text-group">
-                  <mat-card-title>Change Password</mat-card-title>
-                  <mat-card-subtitle>We recommend a strong, unique password</mat-card-subtitle>
+                  <mat-card-title>{{ 'SETTINGS.CHANGE_PASSWORD' | translate }}</mat-card-title>
+                  <mat-card-subtitle>{{ 'SETTINGS.CHANGE_PASSWORD_SUBTITLE' | translate }}</mat-card-subtitle>
                 </div>
               </mat-card-header>
               <mat-card-content>
                 <form [formGroup]="settingsForm" (ngSubmit)="onSubmit()" class="premium-form">
                   <mat-form-field appearance="fill" class="glass-field">
-                    <mat-label>Current Password</mat-label>
-                    <input matInput formControlName="currentPassword" type="password" placeholder="Required to change password" />
+                    <mat-label>{{ 'SETTINGS.CURRENT_PASSWORD' | translate }}</mat-label>
+                    <input matInput formControlName="currentPassword" type="password" [placeholder]="'SETTINGS.CURRENT_PASSWORD_HINT' | translate" />
                     <mat-icon matSuffix>lock_open</mat-icon>
                   </mat-form-field>
 
                   <mat-form-field appearance="fill" class="glass-field">
-                    <mat-label>New Password</mat-label>
+                    <mat-label>{{ 'SETTINGS.NEW_PASSWORD' | translate }}</mat-label>
                     <input matInput formControlName="newPassword" type="password" />
                   </mat-form-field>
 
                   <mat-form-field appearance="fill" class="glass-field">
-                    <mat-label>Confirm Password</mat-label>
+                    <mat-label>{{ 'SETTINGS.CONFIRM_PASSWORD' | translate }}</mat-label>
                     <input matInput formControlName="confirmPassword" type="password" />
                   </mat-form-field>
                   <div class="premium-actions">
                     <button mat-flat-button class="gradient-btn security-grad" type="submit" [disabled]="isLoading">
-                      Update Security
+                      {{ 'SETTINGS.UPDATE_SECURITY' | translate }}
                     </button>
                   </div>
                 </form>
@@ -193,18 +193,126 @@
             <div class="empty-art">
               <mat-icon>shopping_bag</mat-icon>
             </div>
-            <h2>No Orders Found</h2>
-            <p>You haven't made any purchases yet. Your future orders will be tracked here.</p>
-            <button mat-flat-button class="gradient-btn" routerLink="/products">Continue Shopping</button>
+            <h2>{{ 'SETTINGS.NO_ORDERS' | translate }}</h2>
+            <p>{{ 'SETTINGS.NO_ORDERS_DESC' | translate }}</p>
+            <button mat-flat-button class="gradient-btn" routerLink="/products">{{ 'SETTINGS.CONTINUE_SHOPPING' | translate }}</button>
           </div>
 
-          <div *ngIf="activeSection === 'addresses'" class="premium-empty-state animate-slide-up">
-            <div class="empty-art address-color">
-              <mat-icon>location_away</mat-icon>
-            </div>
-            <h2>Address Book is Empty</h2>
-            <p>Save multiple shipping addresses for a faster, one-click checkout experience.</p>
-            <button mat-flat-button class="gradient-btn">Add New Address</button>
+          <!-- Address Section -->
+          <div *ngIf="activeSection === 'addresses'" class="section-card-wrapper animate-slide-up">
+            <mat-card class="premium-card">
+              <mat-card-header class="custom-card-header">
+                <div class="icon-circle primary-grad">
+                  <mat-icon>location_on</mat-icon>
+                </div>
+                <div class="header-text-group">
+                  <mat-card-title>{{ 'SETTINGS.ADDRESSES' | translate }}</mat-card-title>
+                  <mat-card-subtitle>{{ 'SETTINGS.SHIPPING_ADDRESSES' | translate }}</mat-card-subtitle>
+                </div>
+              </mat-card-header>
+              <mat-card-content>
+                <div *ngIf="!isEditingAddress">
+                  <div *ngIf="savedAddresses.length > 0" class="address-cards" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin-bottom: 24px;">
+                    <mat-card *ngFor="let addr of savedAddresses" class="address-card" style="padding: 16px; border-radius: 12px; position: relative;">
+                      <div class="address-card-header" style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                        <mat-icon style="color: var(--mat-sys-primary);">place</mat-icon>
+                        <span style="font-weight: 600; text-transform: uppercase; font-size: 0.9rem;">{{ addr.label }}</span>
+                        <span style="flex-grow: 1;"></span>
+                        <button mat-icon-button (click)="editAddress(addr)" style="color: var(--mat-sys-primary); transform: scale(0.8);"><mat-icon>edit</mat-icon></button>
+                        <button mat-icon-button (click)="deleteAddress(addr.id!)" color="warn" style="transform: scale(0.8);"><mat-icon>delete</mat-icon></button>
+                      </div>
+                      <p style="font-weight: 600; margin: 4px 0;">{{ addr.fullName }}</p>
+                      <p style="opacity: 0.8; font-size: 0.9rem; margin: 2px 0;">{{ addr.neighborhood }} {{ addr.street }} No: {{ addr.buildingNo }} D: {{ addr.apartmentNo }}</p>
+                      <p style="opacity: 0.8; font-size: 0.9rem; margin: 2px 0;">{{ addr.city }} {{ addr.district ? '/ ' + addr.district : '' }}</p>
+                      <p style="opacity: 0.8; font-size: 0.9rem; margin: 2px 0;">{{ addr.phoneNumber }}</p>
+                    </mat-card>
+                  </div>
+                  
+                  <div *ngIf="savedAddresses.length === 0" class="premium-empty-state" style="margin-bottom: 24px;">
+                    <div class="empty-art address-color">
+                      <mat-icon>location_away</mat-icon>
+                    </div>
+                    <h2>{{ 'SETTINGS.NO_ADDRESSES' | translate }}</h2>
+                    <p>{{ 'SETTINGS.NO_ADDRESSES_DESC' | translate }}</p>
+                  </div>
+
+                  <button mat-flat-button class="gradient-btn" (click)="addNewAddress()">
+                    <mat-icon>add</mat-icon> {{ 'SETTINGS.ADD_ADDRESS' | translate }}
+                  </button>
+                </div>
+
+                <div *ngIf="isEditingAddress" class="new-address-form" style="margin-top: 16px;">
+                  <form [formGroup]="addressForm" (ngSubmit)="saveAddress()" class="address-form-grid" style="display: flex; flex-direction: column; gap: 4px;">
+                    
+                    <mat-form-field appearance="fill" class="glass-field" style="width: 100%;">
+                      <mat-label>{{ 'CHECKOUT.ADDRESS_LABEL' | translate }}</mat-label>
+                      <input matInput formControlName="label" [placeholder]="'CHECKOUT.ADDRESS_LABEL_HINT' | translate" />
+                      <mat-icon matPrefix>label</mat-icon>
+                    </mat-form-field>
+        
+                    <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                      <mat-form-field appearance="fill" class="glass-field">
+                        <mat-label>{{ 'CHECKOUT.FULL_NAME' | translate }}</mat-label>
+                        <input matInput formControlName="fullName" />
+                      </mat-form-field>
+                      
+                      <mat-form-field appearance="fill" class="glass-field">
+                        <mat-label>{{ 'CHECKOUT.PHONE' | translate }}</mat-label>
+                        <input matInput formControlName="phoneNumber" />
+                        <mat-icon matSuffix>phone</mat-icon>
+                      </mat-form-field>
+                    </div>
+        
+                    <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                      <mat-form-field appearance="fill" class="glass-field">
+                        <mat-label>{{ 'CHECKOUT.CITY' | translate }}</mat-label>
+                        <mat-select formControlName="city">
+                          <mat-option *ngFor="let city of cities" [value]="city">{{ city }}</mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                      <mat-form-field appearance="fill" class="glass-field">
+                        <mat-label>{{ 'CHECKOUT.DISTRICT' | translate }}</mat-label>
+                        <input matInput formControlName="district" />
+                      </mat-form-field>
+                    </div>
+        
+                    <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                      <mat-form-field appearance="fill" class="glass-field">
+                        <mat-label>{{ 'CHECKOUT.NEIGHBORHOOD' | translate }}</mat-label>
+                        <input matInput formControlName="neighborhood" />
+                      </mat-form-field>
+                      <mat-form-field appearance="fill" class="glass-field">
+                        <mat-label>{{ 'CHECKOUT.STREET' | translate }}</mat-label>
+                        <input matInput formControlName="street" />
+                      </mat-form-field>
+                    </div>
+        
+                    <div class="form-row three-col" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px;">
+                      <mat-form-field appearance="fill" class="glass-field">
+                        <mat-label>{{ 'CHECKOUT.BUILDING_NO' | translate }}</mat-label>
+                        <input matInput formControlName="buildingNo" />
+                      </mat-form-field>
+                      <mat-form-field appearance="fill" class="glass-field">
+                        <mat-label>{{ 'CHECKOUT.APARTMENT_NO' | translate }}</mat-label>
+                        <input matInput formControlName="apartmentNo" />
+                      </mat-form-field>
+                      <mat-form-field appearance="fill" class="glass-field">
+                        <mat-label>{{ 'CHECKOUT.POSTAL_CODE' | translate }}</mat-label>
+                        <input matInput formControlName="postalCode" />
+                      </mat-form-field>
+                    </div>
+
+                    <div style="display: flex; gap: 16px; margin-top: 16px;">
+                      <button mat-stroked-button type="button" (click)="cancelEditAddress()">Back</button>
+                      <button mat-flat-button class="gradient-btn" type="submit" [disabled]="isAddressLoading">
+                        <mat-spinner diameter="20" *ngIf="isAddressLoading"></mat-spinner>
+                        <span *ngIf="!isAddressLoading">Save Address</span>
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </mat-card-content>
+            </mat-card>
           </div>
         </div>
       </div>

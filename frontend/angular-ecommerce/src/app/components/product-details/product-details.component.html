@@ -8,21 +8,21 @@
       </div>
       <div class="detail-body">
         <h1 class="detail-title">{{ p.name }}</h1>
-        <p class="detail-sku">SKU: {{ p.sku }}</p>
-        <p class="detail-price">{{ p.unitPrice | currency: "USD" }}</p>
+        <p class="detail-sku">{{ 'PRODUCT_DETAILS.SKU' | translate }}: {{ p.sku }}</p>
+        <p class="detail-price">{{ p.unitPrice | currency: "TRY":"₺" }}</p>
 
         <div class="detail-stock" *ngIf="p.unitsInStock > 0">
           <mat-icon class="stock-icon">check_circle</mat-icon>
-          <span>In Stock ({{ p.unitsInStock }} available)</span>
+          <span>{{ 'PRODUCT_DETAILS.IN_STOCK' | translate }} ({{ p.unitsInStock }} {{ 'PRODUCT_DETAILS.UNITS_LEFT' | translate }})</span>
         </div>
         <div class="detail-stock out" *ngIf="p.unitsInStock === 0">
           <mat-icon class="stock-icon">cancel</mat-icon>
-          <span>Out of Stock</span>
+          <span>{{ 'PRODUCT_DETAILS.OUT_OF_STOCK' | translate }}</span>
         </div>
 
         <button mat-flat-button color="primary" type="button" (click)="addToCart(p)" class="detail-add-btn">
           <mat-icon>add_shopping_cart</mat-icon>
-          Add to cart
+          {{ 'PRODUCT_DETAILS.ADD_TO_CART' | translate }}
         </button>
 
         <mat-divider class="detail-divider"></mat-divider>
@@ -32,7 +32,7 @@
 
         <button mat-stroked-button type="button" routerLink="/products" class="back-btn">
           <mat-icon>arrow_back</mat-icon>
-          Back to product list
+          {{ 'PRODUCT_DETAILS.BACK' | translate }}
         </button>
       </div>
     </div>
