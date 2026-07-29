@@ -38,6 +38,7 @@
   "CART": {
     "TITLE": "Alışveriş Sepeti",
     "ADDED_TO_CART": "Sepete eklendi.",
+    "STOCK_LIMIT": "Bu ürün için daha fazla stok bulunmuyor.",
     "PRODUCT": "Ürün",
     "QUANTITY": "Adet",
     "UNIT_PRICE": "Birim fiyat",
@@ -58,6 +59,7 @@
     "TITLE": "Ödeme",
     "STEP_ADDRESS": "Teslimat Adresi",
     "STEP_PAYMENT": "Ödeme Bilgileri",
+    "DEMO_PAYMENT_NOTICE": "Bu yalnızca demo ödemesidir. Gerçek kart numarası veya CVV girmeyin.",
     "STEP_REVIEW": "Sipariş Özeti",
     "SELECT_ADDRESS": "Kayıtlı adreslerden seçin",
     "ADD_NEW_ADDRESS": "Yeni Adres Ekle",
@@ -165,5 +167,19 @@
     "VERIFY_SUBTITLE": "Gönderilen 6 haneli kodu girin:",
     "VERIFY": "Doğrula",
     "BACK_TO_LOGIN": "Girişe Dön"
+  },
+  "WISHLIST": {
+    "MY_WISHLIST": "Favorilerim",
+    "SIDEBAR_DESC": "Beğendiğiniz ürünler",
+    "SUBTITLE": "Daha sonrası için kaydettiğiniz ürünler",
+    "ADD": "Favorile",
+    "WISHLISTED": "Favorilerde",
+    "ADD_TOOLTIP": "Favorilere ekle",
+    "REMOVE_TOOLTIP": "Favorilerden çıkar",
+    "ADDED": "Favorilere eklendi!",
+    "REMOVED": "Favorilerden çıkarıldı.",
+    "EMPTY_TITLE": "Favori Listeniz Boş",
+    "EMPTY_DESC": "Ürünlere göz atın ve kalp simgesine dokunarak beğendiğiniz ürünleri kaydedin.",
+    "BROWSE": "Ürünlere Göz At"
   }
 }

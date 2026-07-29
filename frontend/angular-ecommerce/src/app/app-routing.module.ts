@@ -6,11 +6,12 @@ import { CartDetailsComponent } from './components/cart-details/cart-details.com
 import { LoginComponent } from './components/login/login.component';
 import { SettingsComponent } from './components/settings/settings.component';
 import { CheckoutComponent } from './components/checkout/checkout.component';
+import { authGuard } from './services/auth.guard';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
-  { path: 'settings', component: SettingsComponent },
-  { path: 'checkout', component: CheckoutComponent },
+  { path: 'settings', component: SettingsComponent, canActivate: [authGuard] },
+  { path: 'checkout', component: CheckoutComponent, canActivate: [authGuard] },
   { path: 'search/:keyword', component: ProductListComponent },
   { path: 'category/:id', component: ProductListComponent },
   { path: 'category/', component: ProductListComponent },

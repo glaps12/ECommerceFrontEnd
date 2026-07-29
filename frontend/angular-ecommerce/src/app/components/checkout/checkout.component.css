@@ -11,6 +11,19 @@
   margin-bottom: 24px;
 }
 
+.demo-payment-notice {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  padding: 12px 16px;
+  border: 1px solid rgba(245, 158, 11, 0.45);
+  border-radius: 12px;
+  background: rgba(245, 158, 11, 0.1);
+  color: var(--mat-sys-on-surface);
+  font-weight: 600;
+}
+
 /* ── Guest Banner ──────────────────────────────────────── */
 .guest-banner {
   display: flex;

@@ -2,24 +2,31 @@ import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService } from '../../services/auth.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AddressService } from '../../services/address.service';
 import { Address } from '../../common/address';
 import { TURKISH_CITIES } from '../../common/turkish-cities';
+import { WishlistService, WishlistItemData } from '../../services/wishlist.service';
+import { CartService } from '../../services/cart.service';
+import { Product } from '../../common/product';
 
 @Component({
-  selector: 'app-settings',
-  templateUrl: './settings.component.html',
-  styleUrls: ['./settings.component.css']
+    selector: 'app-settings',
+    templateUrl: './settings.component.html',
+    styleUrls: ['./settings.component.css'],
+    standalone: false
 })
 export class SettingsComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   readonly authService = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
   private readonly snackBar = inject(MatSnackBar);
   private readonly addressService = inject(AddressService);
+  readonly wishlistService = inject(WishlistService);
+  private readonly cartService = inject(CartService);
 
-  activeSection: 'profile' | 'orders' | 'addresses' | 'security' = 'profile';
+  activeSection: 'profile' | 'orders' | 'addresses' | 'security' | 'wishlist' = 'profile';
 
   cities = TURKISH_CITIES;
   savedAddresses: Address[] = [];
@@ -47,7 +54,7 @@ export class SettingsComponent implements OnInit {
     phoneNumber: ['', [Validators.required, this.turkishPhoneValidator()]],
     birthDate: [''],
     currentPassword: [''],
-    newPassword: ['', [Validators.minLength(6)]],
+    newPassword: ['', [Validators.minLength(8)]],
     confirmPassword: ['']
   });
 
@@ -57,6 +64,13 @@ export class SettingsComponent implements OnInit {
   ngOnInit(): void {
     const currentEmail = this.authService.userEmail$.value;
     const currentName = this.authService.userName$.value;
+
+    // Check for query param section (e.g. ?section=wishlist)
+    this.route.queryParams.subscribe(params => {
+      if (params['section'] && ['profile', 'orders', 'addresses', 'security', 'wishlist'].includes(params['section'])) {
+        this.activeSection = params['section'] as any;
+      }
+    });
     
     if (currentEmail) {
       let phoneWithoutRegion = this.authService.userPhone$.value || '';
@@ -73,10 +87,10 @@ export class SettingsComponent implements OnInit {
         birthDate: this.authService.userBirthDate$.value || ''
       });
 
-      this.loadAddresses(currentEmail);
+      this.loadAddresses();
 
       // Synchronize dynamically with backend
-      this.authService.getProfile(currentEmail).subscribe({
+      this.authService.getProfile().subscribe({
         next: (res) => {
           if (res.success) {
             let backendPhone = res.phoneNumber || '';
@@ -99,17 +113,17 @@ export class SettingsComponent implements OnInit {
     }
   }
 
-  setSection(section: 'profile' | 'orders' | 'addresses' | 'security'): void {
+  setSection(section: 'profile' | 'orders' | 'addresses' | 'security' | 'wishlist'): void {
     this.activeSection = section;
   }
 
   setSectionFromTab(event: any): void {
-    const sections: ('profile' | 'orders' | 'addresses' | 'security')[] = ['profile', 'orders', 'addresses', 'security'];
+    const sections: ('profile' | 'orders' | 'addresses' | 'security' | 'wishlist')[] = ['profile', 'orders', 'addresses', 'security', 'wishlist'];
     this.activeSection = sections[event.index];
   }
 
-  loadAddresses(email: string) {
-    this.addressService.getAddresses(email).subscribe({
+  loadAddresses() {
+    this.addressService.getAddresses().subscribe({
       next: (addrs) => this.savedAddresses = addrs,
       error: (err) => console.error('Failed to load addresses', err)
     });
@@ -144,22 +158,22 @@ export class SettingsComponent implements OnInit {
     const addrData = this.addressForm.value as Address;
 
     if (this.editingAddressId) {
-      this.addressService.updateAddress(this.editingAddressId, email, addrData).subscribe({
+      this.addressService.updateAddress(this.editingAddressId, addrData).subscribe({
         next: () => {
           this.snackBar.open('Address updated!', 'OK', { duration: 3000, verticalPosition: 'top', horizontalPosition: 'center', panelClass: ['success-snackbar'] });
           this.isAddressLoading = false;
           this.isEditingAddress = false;
-          this.loadAddresses(email);
+          this.loadAddresses();
         },
         error: () => this.isAddressLoading = false
       });
     } else {
-      this.addressService.createAddress(email, addrData).subscribe({
+      this.addressService.createAddress(addrData).subscribe({
         next: () => {
           this.snackBar.open('Address added!', 'OK', { duration: 3000, verticalPosition: 'top', horizontalPosition: 'center', panelClass: ['success-snackbar'] });
           this.isAddressLoading = false;
           this.isEditingAddress = false;
-          this.loadAddresses(email);
+          this.loadAddresses();
         },
         error: () => this.isAddressLoading = false
       });
@@ -169,10 +183,10 @@ export class SettingsComponent implements OnInit {
   deleteAddress(id: number) {
     const email = this.authService.userEmail$.value;
     if (!email || !id) return;
-    this.addressService.deleteAddress(id, email).subscribe({
+    this.addressService.deleteAddress(id).subscribe({
       next: () => {
         this.snackBar.open('Address deleted', 'OK', { duration: 3000, verticalPosition: 'top', horizontalPosition: 'center' });
-        this.loadAddresses(email);
+        this.loadAddresses();
       }
     });
   }
@@ -256,5 +270,19 @@ export class SettingsComponent implements OnInit {
         });
       }
     });
+  }
+
+  removeFromWishlist(productId: number): void {
+    if (this.authService.hasValidSession()) {
+      this.wishlistService.removeFromWishlist(productId);
+    }
+  }
+
+  addToCartFromWishlist(item: WishlistItemData): void {
+    const product = new Product(
+      item.productId, '', item.name, '', item.unitPrice,
+      item.imageUrl, true, item.unitsInStock, new Date(), new Date()
+    );
+    this.cartService.addToCart(product);
   }
 }

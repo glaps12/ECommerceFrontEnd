@@ -1,3 +1,5 @@
+import { Address } from './address';
+
 export interface OrderResponse {
   success: boolean;
   message: string;
@@ -8,7 +10,7 @@ export interface OrderResponse {
   cardLastFour: string;
   dateCreated: string;
   items: OrderItemDto[];
-  shippingAddress: any;
+  shippingAddress: Address;
 }
 
 export interface OrderItemDto {

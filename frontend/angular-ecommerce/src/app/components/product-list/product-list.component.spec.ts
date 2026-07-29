@@ -7,6 +7,8 @@ import { ProductListComponent } from './product-list.component';
 import { ProductService } from '../../services/product.service';
 import { CartService } from '../../services/cart.service';
 import { SharedMaterialModule } from '../../shared-material.module';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('ProductListComponent', () => {
   let fixture: ComponentFixture<ProductListComponent>;
@@ -17,7 +19,7 @@ describe('ProductListComponent', () => {
       page: { size: 10, totalElements: 0, totalPages: 0, number: 0 },
     };
     await TestBed.configureTestingModule({
-      imports: [RouterTestingModule, SharedMaterialModule],
+      imports: [RouterTestingModule, SharedMaterialModule, HttpClientTestingModule, TranslateModule.forRoot()],
       declarations: [ProductListComponent],
       providers: [
         provideNoopAnimations(),

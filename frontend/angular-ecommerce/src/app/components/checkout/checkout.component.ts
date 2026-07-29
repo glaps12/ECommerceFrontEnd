@@ -11,10 +11,24 @@ import { Address } from '../../common/address';
 import { TURKISH_CITIES } from '../../common/turkish-cities';
 import { CartItem } from '../../common/cart-item';
 
+type CheckoutAddress = Omit<Address, 'id' | 'fullAddress'>;
+
+interface CheckoutRequestPayload {
+  cardNumber: string;
+  cardHolderName: string;
+  expiryMonth: string;
+  expiryYear: string;
+  cvv: string;
+  addressId?: number | null;
+  inlineAddress?: CheckoutAddress;
+  saveAddress?: boolean;
+}
+
 @Component({
-  selector: 'app-checkout',
-  templateUrl: './checkout.component.html',
-  styleUrls: ['./checkout.component.css']
+    selector: 'app-checkout',
+    templateUrl: './checkout.component.html',
+    styleUrls: ['./checkout.component.css'],
+    standalone: false
 })
 export class CheckoutComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
@@ -47,7 +61,6 @@ export class CheckoutComponent implements OnInit {
   // Forms
   addressForm!: FormGroup;
   paymentForm!: FormGroup;
-  guestEmailForm!: FormGroup;
 
   ngOnInit(): void {
     // Check cart
@@ -87,10 +100,6 @@ export class CheckoutComponent implements OnInit {
       cvv: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(4)]]
     });
 
-    this.guestEmailForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]]
-    });
-
     // Pre-fill name/phone from profile
     if (this.isLoggedIn && this.userEmail) {
       const fullName = [
@@ -103,7 +112,7 @@ export class CheckoutComponent implements OnInit {
       this.addressForm.patchValue({ phoneNumber: phone });
 
       // Load saved addresses
-      this.addressService.getAddresses(this.userEmail).subscribe({
+      this.addressService.getAddresses().subscribe({
         next: (addresses) => {
           this.savedAddresses = addresses;
           if (addresses.length > 0) {
@@ -204,6 +213,12 @@ export class CheckoutComponent implements OnInit {
       return;
     }
 
+    if ((this.useNewAddress && this.addressForm.invalid)
+      || (!this.useNewAddress && this.selectedAddressId === null)) {
+      this.addressForm.markAllAsTouched();
+      return;
+    }
+
     const cardNum = this.paymentForm.get('cardNumber')?.value?.replace(/\s/g, '');
     if (!this.luhnCheck(cardNum)) {
       this.snackBar.open(
@@ -217,7 +232,7 @@ export class CheckoutComponent implements OnInit {
     this.isProcessing = true;
 
     // Build request
-    const request: any = {
+    const request: CheckoutRequestPayload = {
       cardNumber: cardNum,
       cardHolderName: this.paymentForm.get('cardHolderName')?.value,
       expiryMonth: this.paymentForm.get('expiryMonth')?.value,
@@ -239,22 +254,12 @@ export class CheckoutComponent implements OnInit {
         apartmentNo: addr.apartmentNo,
         postalCode: addr.postalCode
       };
-
-      // Save address if checked and logged in
-      if (addr.saveAddress && this.isLoggedIn && this.userEmail) {
-        this.addressService.createAddress(this.userEmail, request.inlineAddress).subscribe();
-      }
+      request.saveAddress = Boolean(addr.saveAddress);
     } else {
       request.addressId = this.selectedAddressId;
     }
 
-    if (!this.isLoggedIn) {
-      request.guestEmail = this.guestEmailForm.get('email')?.value;
-    }
-
-    const email = this.isLoggedIn ? this.userEmail : undefined;
-
-    this.checkoutService.placeOrder(request, email ?? undefined).subscribe({
+    this.checkoutService.placeOrder(request).subscribe({
       next: (res) => {
         this.isProcessing = false;
         if (res.success) {

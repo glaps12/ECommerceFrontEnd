@@ -17,7 +17,7 @@ Run from this directory:
 
 ## Important locations (only non-obvious)
 - **SSR entry**: `server.ts` (Express, default port `4000`).
-- **Backend API base URLs** (currently hardcoded): `src/app/services/product.service.ts` uses `http://localhost:8080/api/...`.
+- **Backend API base URL**: use the `API_BASE_URL` injection token. Development resolves to `http://localhost:8080/api`; production browser requests use same-origin `/api`, while SSR can read the `API_BASE_URL` environment variable.
 - **Theme toggle / dark mode**: `src/app/services/theme.service.ts` (uses `localStorage` only in the browser; `afterNextRender` in `AppComponent` applies saved theme after hydration).
 
 ## Change safety rules

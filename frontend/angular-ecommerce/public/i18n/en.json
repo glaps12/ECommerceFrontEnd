@@ -38,6 +38,7 @@
   "CART": {
     "TITLE": "Shopping Cart",
     "ADDED_TO_CART": "Added to cart.",
+    "STOCK_LIMIT": "No more stock is available for this product.",
     "PRODUCT": "Product",
     "QUANTITY": "Quantity",
     "UNIT_PRICE": "Unit price",
@@ -58,6 +59,7 @@
     "TITLE": "Checkout",
     "STEP_ADDRESS": "Shipping Address",
     "STEP_PAYMENT": "Payment",
+    "DEMO_PAYMENT_NOTICE": "Demo payment only. Do not enter a real card number or CVV.",
     "STEP_REVIEW": "Review Order",
     "SELECT_ADDRESS": "Select a saved address",
     "ADD_NEW_ADDRESS": "Add New Address",
@@ -165,5 +167,19 @@
     "VERIFY_SUBTITLE": "Enter the 6-digit code sent to",
     "VERIFY": "Verify",
     "BACK_TO_LOGIN": "Back to Login"
+  },
+  "WISHLIST": {
+    "MY_WISHLIST": "My Wishlist",
+    "SIDEBAR_DESC": "Products you love",
+    "SUBTITLE": "Products you've saved for later",
+    "ADD": "Wishlist",
+    "WISHLISTED": "Wishlisted",
+    "ADD_TOOLTIP": "Add to wishlist",
+    "REMOVE_TOOLTIP": "Remove from wishlist",
+    "ADDED": "Added to wishlist!",
+    "REMOVED": "Removed from wishlist.",
+    "EMPTY_TITLE": "Your Wishlist is Empty",
+    "EMPTY_DESC": "Browse products and tap the heart icon to save items you love.",
+    "BROWSE": "Browse Products"
   }
 }

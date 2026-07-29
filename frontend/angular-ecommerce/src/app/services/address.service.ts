@@ -1,27 +1,28 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Address } from '../common/address';
+import { API_BASE_URL } from './api.config';
 
 @Injectable({ providedIn: 'root' })
 export class AddressService {
-  private readonly apiUrl = 'http://localhost:8080/api/addresses';
+  private readonly apiUrl = `${inject(API_BASE_URL)}/addresses`;
 
   constructor(private readonly http: HttpClient) {}
 
-  getAddresses(email: string): Observable<Address[]> {
-    return this.http.get<Address[]>(`${this.apiUrl}?email=${email}`);
+  getAddresses(): Observable<Address[]> {
+    return this.http.get<Address[]>(this.apiUrl);
   }
 
-  createAddress(email: string, address: Address): Observable<Address> {
-    return this.http.post<Address>(`${this.apiUrl}?email=${email}`, address);
+  createAddress(address: Address): Observable<Address> {
+    return this.http.post<Address>(this.apiUrl, address);
   }
 
-  updateAddress(id: number, email: string, address: Address): Observable<Address> {
-    return this.http.put<Address>(`${this.apiUrl}/${id}?email=${email}`, address);
+  updateAddress(id: number, address: Address): Observable<Address> {
+    return this.http.put<Address>(`${this.apiUrl}/${id}`, address);
   }
 
-  deleteAddress(id: number, email: string): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/${id}?email=${email}`);
+  deleteAddress(id: number): Observable<unknown> {
+    return this.http.delete(`${this.apiUrl}/${id}`);
   }
 }

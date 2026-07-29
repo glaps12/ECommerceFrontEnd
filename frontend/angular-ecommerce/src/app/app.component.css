@@ -85,6 +85,16 @@
   letter-spacing: 0.05em;
 }
 
+/* ── Wishlist Toolbar Button ─────────────────────────── */
+.wishlist-toolbar-btn {
+  transition: transform 0.25s ease, color 0.2s ease;
+}
+
+.wishlist-toolbar-btn:hover {
+  transform: scale(1.12);
+  color: #e53935;
+}
+
 /* ── Main Content ────────────────────────────────────── */
 .router-outlet-wrap {
   padding: 24px;

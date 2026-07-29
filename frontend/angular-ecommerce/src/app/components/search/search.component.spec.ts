@@ -3,13 +3,14 @@ import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { SearchComponent } from './search.component';
 import { SharedMaterialModule } from '../../shared-material.module';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('SearchComponent', () => {
   let fixture: ComponentFixture<SearchComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RouterTestingModule, SharedMaterialModule],
+      imports: [RouterTestingModule, SharedMaterialModule, TranslateModule.forRoot()],
       declarations: [SearchComponent],
       providers: [provideNoopAnimations()],
     }).compileComponents();

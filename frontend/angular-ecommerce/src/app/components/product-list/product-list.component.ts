@@ -3,11 +3,14 @@ import { ActivatedRoute } from '@angular/router';
 import { Product } from '../../common/product';
 import { CartService } from '../../services/cart.service';
 import { ProductService } from '../../services/product.service';
+import { WishlistService } from '../../services/wishlist.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
-  selector: 'app-product-list',
-  templateUrl: './product-list-grid.component.html',
-  styleUrl: './product-list.component.css',
+    selector: 'app-product-list',
+    templateUrl: './product-list-grid.component.html',
+    styleUrl: './product-list.component.css',
+    standalone: false
 })
 export class ProductListComponent implements OnInit {
   products: Product[] = [];
@@ -24,6 +27,8 @@ export class ProductListComponent implements OnInit {
     private productService: ProductService,
     private route: ActivatedRoute,
     private cartService: CartService,
+    public wishlistService: WishlistService,
+    private authService: AuthService,
   ) {}
 
   ngOnInit(): void {
@@ -58,6 +63,20 @@ export class ProductListComponent implements OnInit {
 
   addToCart(product: Product): void {
     this.cartService.addToCart(product);
+  }
+
+  toggleWishlist(product: Product): void {
+    if (this.authService.hasValidSession()) {
+      this.wishlistService.toggleWishlist(product.id);
+    }
+  }
+
+  isWishlisted(productId: number): boolean {
+    return this.wishlistService.isWishlisted(productId);
+  }
+
+  get isLoggedIn(): boolean {
+    return this.authService.isLoggedIn$.value;
   }
 
   handleSearchProducts(): void {

@@ -1,16 +1,16 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { OrderResponse } from '../common/order';
+import { API_BASE_URL } from './api.config';
 
 @Injectable({ providedIn: 'root' })
 export class CheckoutService {
-  private readonly apiUrl = 'http://localhost:8080/api/checkout';
+  private readonly apiUrl = `${inject(API_BASE_URL)}/checkout`;
 
   constructor(private readonly http: HttpClient) {}
 
-  placeOrder(request: any, email?: string): Observable<OrderResponse> {
-    const params = email ? `?email=${email}` : '';
-    return this.http.post<OrderResponse>(`${this.apiUrl}/purchase${params}`, request);
+  placeOrder(request: unknown): Observable<OrderResponse> {
+    return this.http.post<OrderResponse>(`${this.apiUrl}/purchase`, request);
   }
 }

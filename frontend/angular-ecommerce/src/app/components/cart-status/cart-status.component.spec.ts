@@ -4,13 +4,15 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { CartStatusComponent } from './cart-status.component';
 import { CartService } from '../../services/cart.service';
 import { SharedMaterialModule } from '../../shared-material.module';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('CartStatusComponent', () => {
   let fixture: ComponentFixture<CartStatusComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RouterTestingModule, SharedMaterialModule],
+      imports: [RouterTestingModule, SharedMaterialModule, HttpClientTestingModule, TranslateModule.forRoot()],
       declarations: [CartStatusComponent],
       providers: [provideNoopAnimations(), CartService],
     }).compileComponents();
