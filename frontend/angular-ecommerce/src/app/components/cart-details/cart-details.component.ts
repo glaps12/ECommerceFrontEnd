@@ -3,9 +3,10 @@ import { CartService } from '../../services/cart.service';
 import { CartItem } from '../../common/cart-item';
 
 @Component({
-  selector: 'app-cart-details',
-  templateUrl: './cart-details.component.html',
-  styleUrl: './cart-details.component.css',
+    selector: 'app-cart-details',
+    templateUrl: './cart-details.component.html',
+    styleUrl: './cart-details.component.css',
+    standalone: false
 })
 export class CartDetailsComponent implements OnInit {
   displayedColumns: string[] = ['product', 'quantity', 'unitPrice', 'subtotal', 'actions'];

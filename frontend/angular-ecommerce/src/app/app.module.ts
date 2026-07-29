@@ -4,7 +4,7 @@ import { BrowserModule, provideClientHydration } from '@angular/platform-browser
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { provideHttpClient, withFetch } from '@angular/common/http';
+import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { ProductListComponent } from './components/product-list/product-list.component';
 import { ProductService } from './services/product.service';
 import { ProductCategoryMenuComponent } from './components/product-category-menu/product-category-menu.component';
@@ -20,6 +20,7 @@ import { SettingsComponent } from './components/settings/settings.component';
 import { CheckoutComponent } from './components/checkout/checkout.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
+import { authInterceptor } from './services/auth.interceptor';
 
 @NgModule({
   declarations: [
@@ -43,7 +44,7 @@ import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
     ReactiveFormsModule,
     CommonModule,
     TranslateModule.forRoot({
-      defaultLanguage: 'tr',
+      fallbackLang: 'tr',
       loader: provideTranslateHttpLoader({
         prefix: './i18n/',
         suffix: '.json'
@@ -52,7 +53,7 @@ import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
   ],
   providers: [
     provideClientHydration(), 
-    provideHttpClient(withFetch()), 
+    provideHttpClient(withFetch(), withInterceptors([authInterceptor])),
     ProductService,
     { provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: { horizontalPosition: 'center', verticalPosition: 'top', duration: 4000 } }
   ],

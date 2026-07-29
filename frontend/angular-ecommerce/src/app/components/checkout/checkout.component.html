@@ -1,300 +1,293 @@
-<div class="checkout-container" *ngIf="!orderPlaced">
-  <h1 class="checkout-title">{{ 'CHECKOUT.TITLE' | translate }}</h1>
-
-  <!-- Guest login prompt -->
-  <div class="guest-banner" *ngIf="!isLoggedIn">
-    <mat-icon>info</mat-icon>
-    <span>{{ 'CHECKOUT.LOGIN_PROMPT' | translate }}
-      <a routerLink="/login" class="login-link">{{ 'TOOLBAR.LOGIN' | translate }}</a>
-      {{ 'CHECKOUT.OR_GUEST' | translate }}
-    </span>
-  </div>
-
-  <mat-stepper linear #stepper class="checkout-stepper">
-    <!-- Step 1: Shipping Address -->
-    <mat-step [label]="'CHECKOUT.STEP_ADDRESS' | translate" [completed]="useNewAddress ? addressForm.valid : selectedAddressId !== null">
-      <div class="step-content">
-
-        <!-- Guest email -->
-        <div class="guest-email-section" *ngIf="!isLoggedIn" [formGroup]="guestEmailForm">
-          <mat-form-field appearance="fill" class="full-width glass-field">
-            <mat-label>{{ 'CHECKOUT.GUEST_EMAIL' | translate }}</mat-label>
-            <input matInput formControlName="email" type="email" />
-            <mat-icon matSuffix>email</mat-icon>
-            <mat-hint>{{ 'CHECKOUT.GUEST_EMAIL_HINT' | translate }}</mat-hint>
-          </mat-form-field>
-        </div>
-
-        <!-- Saved addresses -->
-        <div class="saved-addresses" *ngIf="isLoggedIn && savedAddresses.length > 0">
-          <h3>{{ 'CHECKOUT.SELECT_ADDRESS' | translate }}</h3>
-          <div class="address-cards">
-            <mat-card *ngFor="let addr of savedAddresses"
-              class="address-card" [class.selected]="!useNewAddress && selectedAddressId === addr.id"
-              (click)="selectAddress(addr.id!)">
-              <div class="address-card-header">
-                <mat-icon>place</mat-icon>
-                <span class="address-label">{{ addr.label }}</span>
+@if (!orderPlaced) {
+  <div class="checkout-container">
+    <h1 class="checkout-title">{{ 'CHECKOUT.TITLE' | translate }}</h1>
+    <mat-stepper linear #stepper class="checkout-stepper">
+      <!-- Step 1: Shipping Address -->
+      <mat-step [label]="'CHECKOUT.STEP_ADDRESS' | translate" [completed]="useNewAddress ? addressForm.valid : selectedAddressId !== null">
+        <div class="step-content">
+          <!-- Saved addresses -->
+          @if (savedAddresses.length > 0) {
+            <div class="saved-addresses">
+              <h3>{{ 'CHECKOUT.SELECT_ADDRESS' | translate }}</h3>
+              <div class="address-cards">
+                @for (addr of savedAddresses; track addr) {
+                  <mat-card
+                    class="address-card" [class.selected]="!useNewAddress && selectedAddressId === addr.id"
+                    (click)="selectAddress(addr.id!)">
+                    <div class="address-card-header">
+                      <mat-icon>place</mat-icon>
+                      <span class="address-label">{{ addr.label }}</span>
+                    </div>
+                    <p class="address-name">{{ addr.fullName }}</p>
+                    <p class="address-detail">{{ addr.neighborhood }} {{ addr.street }} No: {{ addr.buildingNo }} D: {{ addr.apartmentNo }}</p>
+                    <p class="address-detail">{{ addr.city }} {{ addr.district ? '/ ' + addr.district : '' }}</p>
+                    <p class="address-phone">{{ addr.phoneNumber }}</p>
+                  </mat-card>
+                }
               </div>
-              <p class="address-name">{{ addr.fullName }}</p>
-              <p class="address-detail">{{ addr.neighborhood }} {{ addr.street }} No: {{ addr.buildingNo }} D: {{ addr.apartmentNo }}</p>
-              <p class="address-detail">{{ addr.city }} {{ addr.district ? '/ ' + addr.district : '' }}</p>
-              <p class="address-phone">{{ addr.phoneNumber }}</p>
-            </mat-card>
-          </div>
-          <button mat-stroked-button type="button" class="new-address-btn" (click)="toggleNewAddress()">
-            <mat-icon>add</mat-icon>
-            {{ 'CHECKOUT.ADD_NEW_ADDRESS' | translate }}
-          </button>
-        </div>
-
-        <!-- No addresses message -->
-        <div *ngIf="isLoggedIn && savedAddresses.length === 0" class="no-addresses-hint">
-          <mat-icon>location_off</mat-icon>
-          <p>{{ 'CHECKOUT.NO_ADDRESSES' | translate }}</p>
-        </div>
-
-        <!-- New address form -->
-        <div class="new-address-form" *ngIf="useNewAddress">
-          <h3 *ngIf="savedAddresses.length > 0">{{ 'CHECKOUT.ADD_NEW_ADDRESS' | translate }}</h3>
-          <form [formGroup]="addressForm" class="address-form-grid">
-
-            <!-- Address label (free text) -->
-            <mat-form-field appearance="fill" class="glass-field full-width">
-              <mat-label>{{ 'CHECKOUT.ADDRESS_LABEL' | translate }}</mat-label>
-              <input matInput formControlName="label" [placeholder]="'CHECKOUT.ADDRESS_LABEL_HINT' | translate" />
-              <mat-icon matPrefix>label</mat-icon>
-            </mat-form-field>
-
-            <div class="form-row">
-              <mat-form-field appearance="fill" class="glass-field">
-                <mat-label>{{ 'CHECKOUT.FULL_NAME' | translate }}</mat-label>
-                <input matInput formControlName="fullName" />
-              </mat-form-field>
-              
-              <mat-form-field appearance="fill" class="glass-field">
-                <mat-label>{{ 'CHECKOUT.PHONE' | translate }}</mat-label>
-                <input matInput formControlName="phoneNumber" />
-                <mat-icon matSuffix>phone</mat-icon>
-              </mat-form-field>
+              <button mat-stroked-button type="button" class="new-address-btn" (click)="toggleNewAddress()">
+                <mat-icon>add</mat-icon>
+                {{ 'CHECKOUT.ADD_NEW_ADDRESS' | translate }}
+              </button>
             </div>
-
-            <div class="form-row">
-              <mat-form-field appearance="fill" class="glass-field">
-                <mat-label>{{ 'CHECKOUT.CITY' | translate }}</mat-label>
-                <mat-select formControlName="city">
-                  <mat-option *ngFor="let city of cities" [value]="city">{{ city }}</mat-option>
-                </mat-select>
-              </mat-form-field>
-              <mat-form-field appearance="fill" class="glass-field">
-                <mat-label>{{ 'CHECKOUT.DISTRICT' | translate }}</mat-label>
-                <input matInput formControlName="district" />
-              </mat-form-field>
+          }
+          <!-- No addresses message -->
+          @if (isLoggedIn && savedAddresses.length === 0) {
+            <div class="no-addresses-hint">
+              <mat-icon>location_off</mat-icon>
+              <p>{{ 'CHECKOUT.NO_ADDRESSES' | translate }}</p>
             </div>
-
-            <div class="form-row">
-              <mat-form-field appearance="fill" class="glass-field">
-                <mat-label>{{ 'CHECKOUT.NEIGHBORHOOD' | translate }}</mat-label>
-                <input matInput formControlName="neighborhood" />
-              </mat-form-field>
-              <mat-form-field appearance="fill" class="glass-field">
-                <mat-label>{{ 'CHECKOUT.STREET' | translate }}</mat-label>
-                <input matInput formControlName="street" />
-              </mat-form-field>
-            </div>
-
-            <div class="form-row three-col">
-              <mat-form-field appearance="fill" class="glass-field">
-                <mat-label>{{ 'CHECKOUT.BUILDING_NO' | translate }}</mat-label>
-                <input matInput formControlName="buildingNo" />
-              </mat-form-field>
-              <mat-form-field appearance="fill" class="glass-field">
-                <mat-label>{{ 'CHECKOUT.APARTMENT_NO' | translate }}</mat-label>
-                <input matInput formControlName="apartmentNo" />
-              </mat-form-field>
-              <mat-form-field appearance="fill" class="glass-field">
-                <mat-label>{{ 'CHECKOUT.POSTAL_CODE' | translate }}</mat-label>
-                <input matInput formControlName="postalCode" />
-              </mat-form-field>
-            </div>
-
-            <mat-checkbox formControlName="saveAddress" *ngIf="isLoggedIn" class="save-checkbox">
-              {{ 'CHECKOUT.SAVE_ADDRESS' | translate }}
-            </mat-checkbox>
-          </form>
-        </div>
-
-        <div class="step-actions">
-          <button mat-flat-button color="primary" matStepperNext
-            [disabled]="(useNewAddress && addressForm.invalid) || (!useNewAddress && !selectedAddressId) || (!isLoggedIn && guestEmailForm.invalid)">
-            {{ 'CHECKOUT.NEXT' | translate }}
-          </button>
-        </div>
-      </div>
-    </mat-step>
-
-    <!-- Step 2: Payment -->
-    <mat-step [label]="'CHECKOUT.STEP_PAYMENT' | translate" [completed]="paymentForm.valid">
-      <div class="step-content">
-        <div class="payment-layout">
-
-          <!-- Card preview -->
-          <div class="card-preview" [class]="detectedCardBrand || 'default'">
-            <div class="card-chip"></div>
-            <div class="card-brand-label">{{ getCardBrandLabel() }}</div>
-            <div class="card-number-display">
-              {{ paymentForm.get('cardNumber')?.value
-                ? (paymentForm.get('cardNumber')!.value | slice:0:4) + ' ' +
-                  (paymentForm.get('cardNumber')!.value | slice:4:8) + ' ' +
-                  (paymentForm.get('cardNumber')!.value | slice:8:12) + ' ' +
-                  (paymentForm.get('cardNumber')!.value | slice:12:16)
-                : '•••• •••• •••• ••••' }}
-            </div>
-            <div class="card-bottom">
-              <div class="card-holder-display">
-                {{ paymentForm.get('cardHolderName')?.value || 'CARDHOLDER NAME' }}
-              </div>
-              <div class="card-expiry-display">
-                {{ paymentForm.get('expiryMonth')?.value || 'MM' }}/{{ paymentForm.get('expiryYear')?.value || 'YY' }}
-              </div>
-            </div>
-          </div>
-
-          <!-- Card form -->
-          <form [formGroup]="paymentForm" class="payment-form">
-            <mat-form-field appearance="fill" class="glass-field full-width">
-              <mat-label>{{ 'CHECKOUT.CARD_NUMBER' | translate }}</mat-label>
-              <input matInput formControlName="cardNumber" maxlength="19"
-                (input)="onCardNumberInput($event)" placeholder="0000 0000 0000 0000" />
-              <mat-icon matSuffix>{{ getCardBrandIcon() }}</mat-icon>
-            </mat-form-field>
-
-            <mat-form-field appearance="fill" class="glass-field full-width">
-              <mat-label>{{ 'CHECKOUT.CARD_HOLDER' | translate }}</mat-label>
-              <input matInput formControlName="cardHolderName" placeholder="AD SOYAD"
-                style="text-transform: uppercase;" />
-              <mat-icon matSuffix>person</mat-icon>
-            </mat-form-field>
-
-            <div class="form-row three-col">
-              <mat-form-field appearance="fill" class="glass-field">
-                <mat-label>{{ 'CHECKOUT.EXPIRY_MONTH' | translate }}</mat-label>
-                <mat-select formControlName="expiryMonth">
-                  <mat-option *ngFor="let m of months" [value]="m">{{ m }}</mat-option>
-                </mat-select>
-              </mat-form-field>
-              <mat-form-field appearance="fill" class="glass-field">
-                <mat-label>{{ 'CHECKOUT.EXPIRY_YEAR' | translate }}</mat-label>
-                <mat-select formControlName="expiryYear">
-                  <mat-option *ngFor="let y of years" [value]="y">{{ y }}</mat-option>
-                </mat-select>
-              </mat-form-field>
-              <mat-form-field appearance="fill" class="glass-field">
-                <mat-label>{{ 'CHECKOUT.CVV' | translate }}</mat-label>
-                <input matInput formControlName="cvv" maxlength="4" type="password" />
-                <mat-icon matSuffix>lock</mat-icon>
-              </mat-form-field>
-            </div>
-          </form>
-        </div>
-
-        <div class="step-actions">
-          <button mat-stroked-button matStepperPrevious>{{ 'CHECKOUT.BACK' | translate }}</button>
-          <button mat-flat-button color="primary" matStepperNext [disabled]="paymentForm.invalid">
-            {{ 'CHECKOUT.NEXT' | translate }}
-          </button>
-        </div>
-      </div>
-    </mat-step>
-
-    <!-- Step 3: Review -->
-    <mat-step [label]="'CHECKOUT.STEP_REVIEW' | translate">
-      <div class="step-content">
-        <div class="review-layout">
-          <!-- Items -->
-          <mat-card class="review-card">
-            <mat-card-header>
-              <mat-card-title>{{ 'CHECKOUT.REVIEW_ITEMS' | translate }}</mat-card-title>
-            </mat-card-header>
-            <mat-card-content>
-              <div class="review-item" *ngFor="let item of cartItems">
-                <img [src]="item.imageUrl" [alt]="item.name" class="review-thumb" />
-                <div class="review-item-info">
-                  <span class="review-item-name">{{ item.name }}</span>
-                  <span class="review-item-qty">× {{ item.quantity }}</span>
+          }
+          <!-- New address form -->
+          @if (useNewAddress) {
+            <div class="new-address-form">
+              @if (savedAddresses.length > 0) {
+                <h3>{{ 'CHECKOUT.ADD_NEW_ADDRESS' | translate }}</h3>
+              }
+              <form [formGroup]="addressForm" class="address-form-grid">
+                <!-- Address label (free text) -->
+                <mat-form-field appearance="fill" class="glass-field full-width">
+                  <mat-label>{{ 'CHECKOUT.ADDRESS_LABEL' | translate }}</mat-label>
+                  <input matInput formControlName="label" [placeholder]="'CHECKOUT.ADDRESS_LABEL_HINT' | translate" />
+                  <mat-icon matPrefix>label</mat-icon>
+                </mat-form-field>
+                <div class="form-row">
+                  <mat-form-field appearance="fill" class="glass-field">
+                    <mat-label>{{ 'CHECKOUT.FULL_NAME' | translate }}</mat-label>
+                    <input matInput formControlName="fullName" />
+                  </mat-form-field>
+                  <mat-form-field appearance="fill" class="glass-field">
+                    <mat-label>{{ 'CHECKOUT.PHONE' | translate }}</mat-label>
+                    <input matInput formControlName="phoneNumber" />
+                    <mat-icon matSuffix>phone</mat-icon>
+                  </mat-form-field>
                 </div>
-                <span class="review-item-price">{{ item.unitPrice * item.quantity | currency: 'TRY':'₺' }}</span>
-              </div>
-              <mat-divider></mat-divider>
-              <div class="review-total">
-                <span>{{ 'CART.TOTAL' | translate }}</span>
-                <span class="total-amount">{{ totalPrice | currency: 'TRY':'₺' }}</span>
-              </div>
-            </mat-card-content>
-          </mat-card>
-
-          <!-- Shipping Address -->
-          <mat-card class="review-card">
-            <mat-card-header>
-              <mat-card-title>{{ 'CHECKOUT.REVIEW_SHIPPING' | translate }}</mat-card-title>
-            </mat-card-header>
-            <mat-card-content>
-              <ng-container *ngIf="!useNewAddress && selectedAddress">
-                <p><strong>{{ selectedAddress.fullName }}</strong></p>
-                <p>{{ selectedAddress.neighborhood }} {{ selectedAddress.street }} No: {{ selectedAddress.buildingNo }} D: {{ selectedAddress.apartmentNo }}</p>
-                <p>{{ selectedAddress.city }} {{ selectedAddress.district ? '/ ' + selectedAddress.district : '' }}</p>
-                <p>{{ selectedAddress.phoneNumber }}</p>
-              </ng-container>
-              <ng-container *ngIf="useNewAddress">
-                <p><strong>{{ addressForm.get('fullName')?.value }}</strong></p>
-                <p>{{ addressForm.get('neighborhood')?.value }} {{ addressForm.get('street')?.value }} No: {{ addressForm.get('buildingNo')?.value }} D: {{ addressForm.get('apartmentNo')?.value }}</p>
-                <p>{{ addressForm.get('city')?.value }} {{ addressForm.get('district')?.value ? '/ ' + addressForm.get('district')?.value : '' }}</p>
-                <p>{{ addressForm.get('phoneNumber')?.value }}</p>
-              </ng-container>
-            </mat-card-content>
-          </mat-card>
-
-          <!-- Payment -->
-          <mat-card class="review-card">
-            <mat-card-header>
-              <mat-card-title>{{ 'CHECKOUT.REVIEW_PAYMENT' | translate }}</mat-card-title>
-            </mat-card-header>
-            <mat-card-content>
-              <div class="review-payment-info">
-                <mat-icon>credit_card</mat-icon>
-                <span>{{ getCardBrandLabel() }} {{ maskedCard }}</span>
-              </div>
-            </mat-card-content>
-          </mat-card>
+                <div class="form-row">
+                  <mat-form-field appearance="fill" class="glass-field">
+                    <mat-label>{{ 'CHECKOUT.CITY' | translate }}</mat-label>
+                    <mat-select formControlName="city">
+                      @for (city of cities; track city) {
+                        <mat-option [value]="city">{{ city }}</mat-option>
+                      }
+                    </mat-select>
+                  </mat-form-field>
+                  <mat-form-field appearance="fill" class="glass-field">
+                    <mat-label>{{ 'CHECKOUT.DISTRICT' | translate }}</mat-label>
+                    <input matInput formControlName="district" />
+                  </mat-form-field>
+                </div>
+                <div class="form-row">
+                  <mat-form-field appearance="fill" class="glass-field">
+                    <mat-label>{{ 'CHECKOUT.NEIGHBORHOOD' | translate }}</mat-label>
+                    <input matInput formControlName="neighborhood" />
+                  </mat-form-field>
+                  <mat-form-field appearance="fill" class="glass-field">
+                    <mat-label>{{ 'CHECKOUT.STREET' | translate }}</mat-label>
+                    <input matInput formControlName="street" />
+                  </mat-form-field>
+                </div>
+                <div class="form-row three-col">
+                  <mat-form-field appearance="fill" class="glass-field">
+                    <mat-label>{{ 'CHECKOUT.BUILDING_NO' | translate }}</mat-label>
+                    <input matInput formControlName="buildingNo" />
+                  </mat-form-field>
+                  <mat-form-field appearance="fill" class="glass-field">
+                    <mat-label>{{ 'CHECKOUT.APARTMENT_NO' | translate }}</mat-label>
+                    <input matInput formControlName="apartmentNo" />
+                  </mat-form-field>
+                  <mat-form-field appearance="fill" class="glass-field">
+                    <mat-label>{{ 'CHECKOUT.POSTAL_CODE' | translate }}</mat-label>
+                    <input matInput formControlName="postalCode" />
+                  </mat-form-field>
+                </div>
+                @if (isLoggedIn) {
+                  <mat-checkbox formControlName="saveAddress" class="save-checkbox">
+                    {{ 'CHECKOUT.SAVE_ADDRESS' | translate }}
+                  </mat-checkbox>
+                }
+              </form>
+            </div>
+          }
+          <div class="step-actions">
+            <button mat-flat-button color="primary" matStepperNext
+              [disabled]="(useNewAddress && addressForm.invalid) || (!useNewAddress && !selectedAddressId)">
+              {{ 'CHECKOUT.NEXT' | translate }}
+            </button>
+          </div>
         </div>
-
-        <div class="step-actions">
-          <button mat-stroked-button matStepperPrevious>{{ 'CHECKOUT.BACK' | translate }}</button>
-          <button mat-flat-button color="primary" (click)="placeOrder()" [disabled]="isProcessing" class="place-order-btn">
-            <mat-spinner diameter="20" *ngIf="isProcessing"></mat-spinner>
-            <span *ngIf="!isProcessing">{{ 'CHECKOUT.PLACE_ORDER' | translate }}</span>
-            <span *ngIf="isProcessing">{{ 'CHECKOUT.PROCESSING' | translate }}</span>
-          </button>
-        </div>
+      </mat-step>
+      <!-- Step 2: Payment -->
+      <mat-step [label]="'CHECKOUT.STEP_PAYMENT' | translate" [completed]="paymentForm.valid">
+        <div class="step-content">
+          <div class="demo-payment-notice" role="note">
+            <mat-icon>science</mat-icon>
+            <span>{{ 'CHECKOUT.DEMO_PAYMENT_NOTICE' | translate }}</span>
+          </div>
+          <div class="payment-layout">
+            <!-- Card preview -->
+            <div class="card-preview" [class]="detectedCardBrand || 'default'">
+              <div class="card-chip"></div>
+              <div class="card-brand-label">{{ getCardBrandLabel() }}</div>
+              <div class="card-number-display">
+                {{ paymentForm.get('cardNumber')?.value
+                ? (paymentForm.get('cardNumber')!.value | slice:0:4) + ' ' +
+                (paymentForm.get('cardNumber')!.value | slice:4:8) + ' ' +
+                (paymentForm.get('cardNumber')!.value | slice:8:12) + ' ' +
+                (paymentForm.get('cardNumber')!.value | slice:12:16)
+                : '•••• •••• •••• ••••' }}
+              </div>
+              <div class="card-bottom">
+                <div class="card-holder-display">
+                  {{ paymentForm.get('cardHolderName')?.value || 'CARDHOLDER NAME' }}
+                </div>
+                <div class="card-expiry-display">
+                  {{ paymentForm.get('expiryMonth')?.value || 'MM' }}/{{ paymentForm.get('expiryYear')?.value || 'YY' }}
+                </div>
+              </div>
+            </div>
+            <!-- Card form -->
+            <form [formGroup]="paymentForm" class="payment-form">
+              <mat-form-field appearance="fill" class="glass-field full-width">
+                <mat-label>{{ 'CHECKOUT.CARD_NUMBER' | translate }}</mat-label>
+                <input matInput formControlName="cardNumber" maxlength="19"
+                  (input)="onCardNumberInput($event)" placeholder="0000 0000 0000 0000" />
+                  <mat-icon matSuffix>{{ getCardBrandIcon() }}</mat-icon>
+                </mat-form-field>
+                <mat-form-field appearance="fill" class="glass-field full-width">
+                  <mat-label>{{ 'CHECKOUT.CARD_HOLDER' | translate }}</mat-label>
+                  <input matInput formControlName="cardHolderName" placeholder="AD SOYAD"
+                    style="text-transform: uppercase;" />
+                    <mat-icon matSuffix>person</mat-icon>
+                  </mat-form-field>
+                  <div class="form-row three-col">
+                    <mat-form-field appearance="fill" class="glass-field">
+                      <mat-label>{{ 'CHECKOUT.EXPIRY_MONTH' | translate }}</mat-label>
+                      <mat-select formControlName="expiryMonth">
+                        @for (m of months; track m) {
+                          <mat-option [value]="m">{{ m }}</mat-option>
+                        }
+                      </mat-select>
+                    </mat-form-field>
+                    <mat-form-field appearance="fill" class="glass-field">
+                      <mat-label>{{ 'CHECKOUT.EXPIRY_YEAR' | translate }}</mat-label>
+                      <mat-select formControlName="expiryYear">
+                        @for (y of years; track y) {
+                          <mat-option [value]="y">{{ y }}</mat-option>
+                        }
+                      </mat-select>
+                    </mat-form-field>
+                    <mat-form-field appearance="fill" class="glass-field">
+                      <mat-label>{{ 'CHECKOUT.CVV' | translate }}</mat-label>
+                      <input matInput formControlName="cvv" maxlength="4" type="password" />
+                      <mat-icon matSuffix>lock</mat-icon>
+                    </mat-form-field>
+                  </div>
+                </form>
+              </div>
+              <div class="step-actions">
+                <button mat-stroked-button matStepperPrevious>{{ 'CHECKOUT.BACK' | translate }}</button>
+                <button mat-flat-button color="primary" matStepperNext [disabled]="paymentForm.invalid">
+                  {{ 'CHECKOUT.NEXT' | translate }}
+                </button>
+              </div>
+            </div>
+          </mat-step>
+          <!-- Step 3: Review -->
+          <mat-step [label]="'CHECKOUT.STEP_REVIEW' | translate">
+            <div class="step-content">
+              <div class="review-layout">
+                <!-- Items -->
+                <mat-card class="review-card">
+                  <mat-card-header>
+                    <mat-card-title>{{ 'CHECKOUT.REVIEW_ITEMS' | translate }}</mat-card-title>
+                  </mat-card-header>
+                  <mat-card-content>
+                    @for (item of cartItems; track item) {
+                      <div class="review-item">
+                        <img [src]="item.imageUrl" [alt]="item.name" class="review-thumb" />
+                        <div class="review-item-info">
+                          <span class="review-item-name">{{ item.name }}</span>
+                          <span class="review-item-qty">× {{ item.quantity }}</span>
+                        </div>
+                        <span class="review-item-price">{{ item.unitPrice * item.quantity | currency: 'TRY':'₺' }}</span>
+                      </div>
+                    }
+                    <mat-divider></mat-divider>
+                    <div class="review-total">
+                      <span>{{ 'CART.TOTAL' | translate }}</span>
+                      <span class="total-amount">{{ totalPrice | currency: 'TRY':'₺' }}</span>
+                    </div>
+                  </mat-card-content>
+                </mat-card>
+                <!-- Shipping Address -->
+                <mat-card class="review-card">
+                  <mat-card-header>
+                    <mat-card-title>{{ 'CHECKOUT.REVIEW_SHIPPING' | translate }}</mat-card-title>
+                  </mat-card-header>
+                  <mat-card-content>
+                    @if (!useNewAddress && selectedAddress) {
+                      <p><strong>{{ selectedAddress.fullName }}</strong></p>
+                      <p>{{ selectedAddress.neighborhood }} {{ selectedAddress.street }} No: {{ selectedAddress.buildingNo }} D: {{ selectedAddress.apartmentNo }}</p>
+                      <p>{{ selectedAddress.city }} {{ selectedAddress.district ? '/ ' + selectedAddress.district : '' }}</p>
+                      <p>{{ selectedAddress.phoneNumber }}</p>
+                    }
+                    @if (useNewAddress) {
+                      <p><strong>{{ addressForm.get('fullName')?.value }}</strong></p>
+                      <p>{{ addressForm.get('neighborhood')?.value }} {{ addressForm.get('street')?.value }} No: {{ addressForm.get('buildingNo')?.value }} D: {{ addressForm.get('apartmentNo')?.value }}</p>
+                      <p>{{ addressForm.get('city')?.value }} {{ addressForm.get('district')?.value ? '/ ' + addressForm.get('district')?.value : '' }}</p>
+                      <p>{{ addressForm.get('phoneNumber')?.value }}</p>
+                    }
+                  </mat-card-content>
+                </mat-card>
+                <!-- Payment -->
+                <mat-card class="review-card">
+                  <mat-card-header>
+                    <mat-card-title>{{ 'CHECKOUT.REVIEW_PAYMENT' | translate }}</mat-card-title>
+                  </mat-card-header>
+                  <mat-card-content>
+                    <div class="review-payment-info">
+                      <mat-icon>credit_card</mat-icon>
+                      <span>{{ getCardBrandLabel() }} {{ maskedCard }}</span>
+                    </div>
+                  </mat-card-content>
+                </mat-card>
+              </div>
+              <div class="step-actions">
+                <button mat-stroked-button matStepperPrevious>{{ 'CHECKOUT.BACK' | translate }}</button>
+                <button mat-flat-button color="primary" (click)="placeOrder()" [disabled]="isProcessing" class="place-order-btn">
+                  @if (isProcessing) {
+                    <mat-spinner diameter="20"></mat-spinner>
+                  }
+                  @if (!isProcessing) {
+                    <span>{{ 'CHECKOUT.PLACE_ORDER' | translate }}</span>
+                  }
+                  @if (isProcessing) {
+                    <span>{{ 'CHECKOUT.PROCESSING' | translate }}</span>
+                  }
+                </button>
+              </div>
+            </div>
+          </mat-step>
+        </mat-stepper>
       </div>
-    </mat-step>
-  </mat-stepper>
-</div>
+    }
 
-<!-- Order Success -->
-<div class="order-success" *ngIf="orderPlaced">
-  <div class="success-animation">
-    <div class="success-circle">
-      <mat-icon class="success-icon">check_circle</mat-icon>
-    </div>
-  </div>
-  <h1 class="success-title">{{ 'CHECKOUT.SUCCESS_TITLE' | translate }}</h1>
-  <p class="success-message">{{ 'CHECKOUT.SUCCESS_MESSAGE' | translate }}</p>
-  <div class="tracking-box">
-    <span class="tracking-label">{{ 'CHECKOUT.TRACKING' | translate }}</span>
-    <span class="tracking-number">{{ orderTrackingNumber }}</span>
-  </div>
-  <button mat-flat-button color="primary" (click)="continueShopping()" class="continue-btn">
-    {{ 'CHECKOUT.CONTINUE_SHOPPING' | translate }}
-  </button>
-</div>
+    <!-- Order Success -->
+    @if (orderPlaced) {
+      <div class="order-success">
+        <div class="success-animation">
+          <div class="success-circle">
+            <mat-icon class="success-icon">check_circle</mat-icon>
+          </div>
+        </div>
+        <h1 class="success-title">{{ 'CHECKOUT.SUCCESS_TITLE' | translate }}</h1>
+        <p class="success-message">{{ 'CHECKOUT.SUCCESS_MESSAGE' | translate }}</p>
+        <div class="tracking-box">
+          <span class="tracking-label">{{ 'CHECKOUT.TRACKING' | translate }}</span>
+          <span class="tracking-number">{{ orderTrackingNumber }}</span>
+        </div>
+        <button mat-flat-button color="primary" (click)="continueShopping()" class="continue-btn">
+          {{ 'CHECKOUT.CONTINUE_SHOPPING' | translate }}
+        </button>
+      </div>
+    }

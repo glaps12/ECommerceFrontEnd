@@ -3,12 +3,13 @@
     <mat-icon matListItemIcon>storefront</mat-icon>
     <span matListItemTitle>All products</span>
   </a>
-  <a
-    mat-list-item
-    *ngFor="let tempProductCategory of productCategories"
-    [routerLink]="['/category', tempProductCategory.id]"
-    routerLinkActive="active-link">
-    <mat-icon matListItemIcon>label</mat-icon>
-    <span matListItemTitle>{{ tempProductCategory.categoryName }}</span>
-  </a>
+  @for (tempProductCategory of productCategories; track tempProductCategory) {
+    <a
+      mat-list-item
+      [routerLink]="['/category', tempProductCategory.id]"
+      routerLinkActive="active-link">
+      <mat-icon matListItemIcon>label</mat-icon>
+      <span matListItemTitle>{{ tempProductCategory.categoryName }}</span>
+    </a>
+  }
 </mat-nav-list>

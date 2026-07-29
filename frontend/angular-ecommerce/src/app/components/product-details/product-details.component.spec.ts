@@ -8,6 +8,8 @@ import { ProductService } from '../../services/product.service';
 import { CartService } from '../../services/cart.service';
 import { SharedMaterialModule } from '../../shared-material.module';
 import { Product } from '../../common/product';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('ProductDetailsComponent', () => {
   let fixture: ComponentFixture<ProductDetailsComponent>;
@@ -26,7 +28,7 @@ describe('ProductDetailsComponent', () => {
       new Date(),
     );
     await TestBed.configureTestingModule({
-      imports: [RouterTestingModule, SharedMaterialModule],
+      imports: [RouterTestingModule, SharedMaterialModule, HttpClientTestingModule, TranslateModule.forRoot()],
       declarations: [ProductDetailsComponent],
       providers: [
         provideNoopAnimations(),

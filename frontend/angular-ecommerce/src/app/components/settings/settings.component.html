@@ -22,6 +22,11 @@
             <span matListItemTitle class="nav-title">{{ 'SETTINGS.MY_ORDERS' | translate }}</span>
             <span matListItemLine class="nav-subtitle">{{ 'SETTINGS.ORDER_HISTORY' | translate }}</span>
           </a>
+          <a mat-list-item (click)="setSection('wishlist')" [class.active]="activeSection === 'wishlist'">
+            <mat-icon matListItemIcon class="nav-icon-main">favorite</mat-icon>
+            <span matListItemTitle class="nav-title">{{ 'WISHLIST.MY_WISHLIST' | translate }}</span>
+            <span matListItemLine class="nav-subtitle">{{ 'WISHLIST.SIDEBAR_DESC' | translate }}</span>
+          </a>
         </div>
 
         <div class="nav-group">
@@ -67,253 +72,343 @@
 
         <div class="main-card-area">
           <!-- Profile Section -->
-          <div *ngIf="activeSection === 'profile'" class="section-card-wrapper animate-slide-up">
-            <mat-card class="premium-card">
-              <mat-card-header class="custom-card-header">
-                <div class="icon-circle primary-grad">
-                  <mat-icon>person</mat-icon>
-                </div>
-                <div class="header-text-group">
-                  <mat-card-title>{{ 'SETTINGS.PERSONAL_DETAILS' | translate }}</mat-card-title>
-                  <mat-card-subtitle>{{ 'SETTINGS.PERSONAL_SUBTITLE' | translate }}</mat-card-subtitle>
-                </div>
-              </mat-card-header>
-
-              <mat-card-content>
-                <form [formGroup]="settingsForm" (ngSubmit)="onSubmit()" class="premium-form">
-                  <div class="inline-message error animate-slide-up" *ngIf="errorMessage">
-                    <mat-icon>error_outline</mat-icon>
-                    <span>{{ errorMessage }}</span>
+          @if (activeSection === 'profile') {
+            <div class="section-card-wrapper animate-slide-up">
+              <mat-card class="premium-card">
+                <mat-card-header class="custom-card-header">
+                  <div class="icon-circle primary-grad">
+                    <mat-icon>person</mat-icon>
                   </div>
-
-                  <div class="form-grid">
-                    <mat-form-field appearance="fill" class="glass-field">
-                      <mat-label>{{ 'SETTINGS.FIRST_NAME' | translate }}</mat-label>
-                      <input matInput formControlName="firstName" placeholder="e.g. John" />
-                      <mat-error *ngIf="settingsForm.get('firstName')?.hasError('required')">First name is required</mat-error>
-                      <mat-error *ngIf="settingsForm.get('firstName')?.hasError('minlength')">Must be at least 2 characters</mat-error>
-                    </mat-form-field>
-  
-                    <mat-form-field appearance="fill" class="glass-field">
-                      <mat-label>{{ 'SETTINGS.LAST_NAME' | translate }}</mat-label>
-                      <input matInput formControlName="lastName" placeholder="e.g. Doe" />
-                      <mat-error *ngIf="settingsForm.get('lastName')?.hasError('required')">Last name is required</mat-error>
-                      <mat-error *ngIf="settingsForm.get('lastName')?.hasError('minlength')">Must be at least 2 characters</mat-error>
-                    </mat-form-field>
+                  <div class="header-text-group">
+                    <mat-card-title>{{ 'SETTINGS.PERSONAL_DETAILS' | translate }}</mat-card-title>
+                    <mat-card-subtitle>{{ 'SETTINGS.PERSONAL_SUBTITLE' | translate }}</mat-card-subtitle>
                   </div>
-
-                  <div class="form-grid">
-                    <div style="display: flex; gap: 16px;">
-                      <mat-form-field appearance="fill" class="glass-field" style="width: 120px;">
-                        <mat-label>{{ 'SETTINGS.REGION' | translate }}</mat-label>
-                        <mat-select disabled value="+90">
-                          <mat-option value="+90">🇹🇷 +90</mat-option>
-                        </mat-select>
-                      </mat-form-field>
-
-                      <mat-form-field appearance="fill" class="glass-field" style="flex: 1;">
-                        <mat-label>{{ 'SETTINGS.PHONE' | translate }}</mat-label>
-                        <input matInput formControlName="phoneNumber" placeholder="5XX XXX XX XX" maxlength="10" />
-                        <mat-icon matSuffix>phone</mat-icon>
-                        <mat-error *ngIf="settingsForm.get('phoneNumber')?.hasError('required')">Phone number is required</mat-error>
-                        <mat-error *ngIf="settingsForm.get('phoneNumber')?.hasError('startsWithZero')">Phone number cannot start with 0</mat-error>
-                        <mat-error *ngIf="settingsForm.get('phoneNumber')?.hasError('pattern')">Must be 10 digits and start with 5</mat-error>
-                      </mat-form-field>
-                    </div>
-
-                    <mat-form-field appearance="fill" class="glass-field">
-                      <mat-label>{{ 'SETTINGS.BIRTH_DATE' | translate }}</mat-label>
-                      <input matInput [matDatepicker]="picker" formControlName="birthDate">
-                      <mat-hint>MM/DD/YYYY</mat-hint>
-                      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-                      <mat-datepicker #picker></mat-datepicker>
-                    </mat-form-field>
-                  </div>
-  
-                  <mat-form-field appearance="fill" class="glass-field wide">
-                    <mat-label>{{ 'SETTINGS.EMAIL' | translate }}</mat-label>
-                    <input matInput formControlName="email" type="email" />
-                    <mat-icon matSuffix>alternate_email</mat-icon>
-                    <mat-error *ngIf="settingsForm.get('email')?.hasError('required')">Email is required</mat-error>
-                    <mat-error *ngIf="settingsForm.get('email')?.hasError('email')">Please enter a valid email</mat-error>
-                  </mat-form-field>
-  
-                  <div class="premium-actions">
-                    <button mat-flat-button class="gradient-btn" type="submit" [disabled]="isLoading">
-                      <mat-spinner diameter="20" *ngIf="isLoading"></mat-spinner>
-                      <span *ngIf="!isLoading">{{ 'SETTINGS.SAVE_PROFILE' | translate }}</span>
-                    </button>
-                  </div>
-                </form>
-              </mat-card-content>
-            </mat-card>
-          </div>
-
-          <!-- Security Section -->
-          <div *ngIf="activeSection === 'security'" class="section-card-wrapper animate-slide-up">
-            <mat-card class="premium-card narrow-on-desktop">
-              <mat-card-header class="custom-card-header">
-                <div class="icon-circle security-grad">
-                  <mat-icon>lock</mat-icon>
-                </div>
-                <div class="header-text-group">
-                  <mat-card-title>{{ 'SETTINGS.CHANGE_PASSWORD' | translate }}</mat-card-title>
-                  <mat-card-subtitle>{{ 'SETTINGS.CHANGE_PASSWORD_SUBTITLE' | translate }}</mat-card-subtitle>
-                </div>
-              </mat-card-header>
-              <mat-card-content>
-                <form [formGroup]="settingsForm" (ngSubmit)="onSubmit()" class="premium-form">
-                  <mat-form-field appearance="fill" class="glass-field">
-                    <mat-label>{{ 'SETTINGS.CURRENT_PASSWORD' | translate }}</mat-label>
-                    <input matInput formControlName="currentPassword" type="password" [placeholder]="'SETTINGS.CURRENT_PASSWORD_HINT' | translate" />
-                    <mat-icon matSuffix>lock_open</mat-icon>
-                  </mat-form-field>
-
-                  <mat-form-field appearance="fill" class="glass-field">
-                    <mat-label>{{ 'SETTINGS.NEW_PASSWORD' | translate }}</mat-label>
-                    <input matInput formControlName="newPassword" type="password" />
-                  </mat-form-field>
-
-                  <mat-form-field appearance="fill" class="glass-field">
-                    <mat-label>{{ 'SETTINGS.CONFIRM_PASSWORD' | translate }}</mat-label>
-                    <input matInput formControlName="confirmPassword" type="password" />
-                  </mat-form-field>
-                  <div class="premium-actions">
-                    <button mat-flat-button class="gradient-btn security-grad" type="submit" [disabled]="isLoading">
-                      {{ 'SETTINGS.UPDATE_SECURITY' | translate }}
-                    </button>
-                  </div>
-                </form>
-              </mat-card-content>
-            </mat-card>
-          </div>
-
-          <!-- Empty States -->
-          <div *ngIf="activeSection === 'orders'" class="premium-empty-state animate-slide-up">
-            <div class="empty-art">
-              <mat-icon>shopping_bag</mat-icon>
-            </div>
-            <h2>{{ 'SETTINGS.NO_ORDERS' | translate }}</h2>
-            <p>{{ 'SETTINGS.NO_ORDERS_DESC' | translate }}</p>
-            <button mat-flat-button class="gradient-btn" routerLink="/products">{{ 'SETTINGS.CONTINUE_SHOPPING' | translate }}</button>
-          </div>
-
-          <!-- Address Section -->
-          <div *ngIf="activeSection === 'addresses'" class="section-card-wrapper animate-slide-up">
-            <mat-card class="premium-card">
-              <mat-card-header class="custom-card-header">
-                <div class="icon-circle primary-grad">
-                  <mat-icon>location_on</mat-icon>
-                </div>
-                <div class="header-text-group">
-                  <mat-card-title>{{ 'SETTINGS.ADDRESSES' | translate }}</mat-card-title>
-                  <mat-card-subtitle>{{ 'SETTINGS.SHIPPING_ADDRESSES' | translate }}</mat-card-subtitle>
-                </div>
-              </mat-card-header>
-              <mat-card-content>
-                <div *ngIf="!isEditingAddress">
-                  <div *ngIf="savedAddresses.length > 0" class="address-cards" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin-bottom: 24px;">
-                    <mat-card *ngFor="let addr of savedAddresses" class="address-card" style="padding: 16px; border-radius: 12px; position: relative;">
-                      <div class="address-card-header" style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-                        <mat-icon style="color: var(--mat-sys-primary);">place</mat-icon>
-                        <span style="font-weight: 600; text-transform: uppercase; font-size: 0.9rem;">{{ addr.label }}</span>
-                        <span style="flex-grow: 1;"></span>
-                        <button mat-icon-button (click)="editAddress(addr)" style="color: var(--mat-sys-primary); transform: scale(0.8);"><mat-icon>edit</mat-icon></button>
-                        <button mat-icon-button (click)="deleteAddress(addr.id!)" color="warn" style="transform: scale(0.8);"><mat-icon>delete</mat-icon></button>
+                </mat-card-header>
+                <mat-card-content>
+                  <form [formGroup]="settingsForm" (ngSubmit)="onSubmit()" class="premium-form">
+                    @if (errorMessage) {
+                      <div class="inline-message error animate-slide-up">
+                        <mat-icon>error_outline</mat-icon>
+                        <span>{{ errorMessage }}</span>
                       </div>
-                      <p style="font-weight: 600; margin: 4px 0;">{{ addr.fullName }}</p>
-                      <p style="opacity: 0.8; font-size: 0.9rem; margin: 2px 0;">{{ addr.neighborhood }} {{ addr.street }} No: {{ addr.buildingNo }} D: {{ addr.apartmentNo }}</p>
-                      <p style="opacity: 0.8; font-size: 0.9rem; margin: 2px 0;">{{ addr.city }} {{ addr.district ? '/ ' + addr.district : '' }}</p>
-                      <p style="opacity: 0.8; font-size: 0.9rem; margin: 2px 0;">{{ addr.phoneNumber }}</p>
-                    </mat-card>
-                  </div>
-                  
-                  <div *ngIf="savedAddresses.length === 0" class="premium-empty-state" style="margin-bottom: 24px;">
-                    <div class="empty-art address-color">
-                      <mat-icon>location_away</mat-icon>
+                    }
+                    <div class="form-grid">
+                      <mat-form-field appearance="fill" class="glass-field">
+                        <mat-label>{{ 'SETTINGS.FIRST_NAME' | translate }}</mat-label>
+                        <input matInput formControlName="firstName" placeholder="e.g. John" />
+                        @if (settingsForm.get('firstName')?.hasError('required')) {
+                          <mat-error>First name is required</mat-error>
+                        }
+                        @if (settingsForm.get('firstName')?.hasError('minlength')) {
+                          <mat-error>Must be at least 2 characters</mat-error>
+                        }
+                      </mat-form-field>
+                      <mat-form-field appearance="fill" class="glass-field">
+                        <mat-label>{{ 'SETTINGS.LAST_NAME' | translate }}</mat-label>
+                        <input matInput formControlName="lastName" placeholder="e.g. Doe" />
+                        @if (settingsForm.get('lastName')?.hasError('required')) {
+                          <mat-error>Last name is required</mat-error>
+                        }
+                        @if (settingsForm.get('lastName')?.hasError('minlength')) {
+                          <mat-error>Must be at least 2 characters</mat-error>
+                        }
+                      </mat-form-field>
                     </div>
-                    <h2>{{ 'SETTINGS.NO_ADDRESSES' | translate }}</h2>
-                    <p>{{ 'SETTINGS.NO_ADDRESSES_DESC' | translate }}</p>
-                  </div>
-
-                  <button mat-flat-button class="gradient-btn" (click)="addNewAddress()">
-                    <mat-icon>add</mat-icon> {{ 'SETTINGS.ADD_ADDRESS' | translate }}
-                  </button>
-                </div>
-
-                <div *ngIf="isEditingAddress" class="new-address-form" style="margin-top: 16px;">
-                  <form [formGroup]="addressForm" (ngSubmit)="saveAddress()" class="address-form-grid" style="display: flex; flex-direction: column; gap: 4px;">
-                    
-                    <mat-form-field appearance="fill" class="glass-field" style="width: 100%;">
-                      <mat-label>{{ 'CHECKOUT.ADDRESS_LABEL' | translate }}</mat-label>
-                      <input matInput formControlName="label" [placeholder]="'CHECKOUT.ADDRESS_LABEL_HINT' | translate" />
-                      <mat-icon matPrefix>label</mat-icon>
+                    <div class="form-grid">
+                      <div style="display: flex; gap: 16px;">
+                        <mat-form-field appearance="fill" class="glass-field" style="width: 120px;">
+                          <mat-label>{{ 'SETTINGS.REGION' | translate }}</mat-label>
+                          <mat-select disabled value="+90">
+                            <mat-option value="+90">🇹🇷 +90</mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                        <mat-form-field appearance="fill" class="glass-field" style="flex: 1;">
+                          <mat-label>{{ 'SETTINGS.PHONE' | translate }}</mat-label>
+                          <input matInput formControlName="phoneNumber" placeholder="5XX XXX XX XX" maxlength="10" />
+                          <mat-icon matSuffix>phone</mat-icon>
+                          @if (settingsForm.get('phoneNumber')?.hasError('required')) {
+                            <mat-error>Phone number is required</mat-error>
+                          }
+                          @if (settingsForm.get('phoneNumber')?.hasError('startsWithZero')) {
+                            <mat-error>Phone number cannot start with 0</mat-error>
+                          }
+                          @if (settingsForm.get('phoneNumber')?.hasError('pattern')) {
+                            <mat-error>Must be 10 digits and start with 5</mat-error>
+                          }
+                        </mat-form-field>
+                      </div>
+                      <mat-form-field appearance="fill" class="glass-field">
+                        <mat-label>{{ 'SETTINGS.BIRTH_DATE' | translate }}</mat-label>
+                        <input matInput [matDatepicker]="picker" formControlName="birthDate">
+                        <mat-hint>MM/DD/YYYY</mat-hint>
+                        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                        <mat-datepicker #picker></mat-datepicker>
+                      </mat-form-field>
+                    </div>
+                    <mat-form-field appearance="fill" class="glass-field wide">
+                      <mat-label>{{ 'SETTINGS.EMAIL' | translate }}</mat-label>
+                      <input matInput formControlName="email" type="email" />
+                      <mat-icon matSuffix>alternate_email</mat-icon>
+                      @if (settingsForm.get('email')?.hasError('required')) {
+                        <mat-error>Email is required</mat-error>
+                      }
+                      @if (settingsForm.get('email')?.hasError('email')) {
+                        <mat-error>Please enter a valid email</mat-error>
+                      }
                     </mat-form-field>
-        
-                    <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-                      <mat-form-field appearance="fill" class="glass-field">
-                        <mat-label>{{ 'CHECKOUT.FULL_NAME' | translate }}</mat-label>
-                        <input matInput formControlName="fullName" />
-                      </mat-form-field>
-                      
-                      <mat-form-field appearance="fill" class="glass-field">
-                        <mat-label>{{ 'CHECKOUT.PHONE' | translate }}</mat-label>
-                        <input matInput formControlName="phoneNumber" />
-                        <mat-icon matSuffix>phone</mat-icon>
-                      </mat-form-field>
-                    </div>
-        
-                    <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-                      <mat-form-field appearance="fill" class="glass-field">
-                        <mat-label>{{ 'CHECKOUT.CITY' | translate }}</mat-label>
-                        <mat-select formControlName="city">
-                          <mat-option *ngFor="let city of cities" [value]="city">{{ city }}</mat-option>
-                        </mat-select>
-                      </mat-form-field>
-                      <mat-form-field appearance="fill" class="glass-field">
-                        <mat-label>{{ 'CHECKOUT.DISTRICT' | translate }}</mat-label>
-                        <input matInput formControlName="district" />
-                      </mat-form-field>
-                    </div>
-        
-                    <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-                      <mat-form-field appearance="fill" class="glass-field">
-                        <mat-label>{{ 'CHECKOUT.NEIGHBORHOOD' | translate }}</mat-label>
-                        <input matInput formControlName="neighborhood" />
-                      </mat-form-field>
-                      <mat-form-field appearance="fill" class="glass-field">
-                        <mat-label>{{ 'CHECKOUT.STREET' | translate }}</mat-label>
-                        <input matInput formControlName="street" />
-                      </mat-form-field>
-                    </div>
-        
-                    <div class="form-row three-col" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px;">
-                      <mat-form-field appearance="fill" class="glass-field">
-                        <mat-label>{{ 'CHECKOUT.BUILDING_NO' | translate }}</mat-label>
-                        <input matInput formControlName="buildingNo" />
-                      </mat-form-field>
-                      <mat-form-field appearance="fill" class="glass-field">
-                        <mat-label>{{ 'CHECKOUT.APARTMENT_NO' | translate }}</mat-label>
-                        <input matInput formControlName="apartmentNo" />
-                      </mat-form-field>
-                      <mat-form-field appearance="fill" class="glass-field">
-                        <mat-label>{{ 'CHECKOUT.POSTAL_CODE' | translate }}</mat-label>
-                        <input matInput formControlName="postalCode" />
-                      </mat-form-field>
-                    </div>
-
-                    <div style="display: flex; gap: 16px; margin-top: 16px;">
-                      <button mat-stroked-button type="button" (click)="cancelEditAddress()">Back</button>
-                      <button mat-flat-button class="gradient-btn" type="submit" [disabled]="isAddressLoading">
-                        <mat-spinner diameter="20" *ngIf="isAddressLoading"></mat-spinner>
-                        <span *ngIf="!isAddressLoading">Save Address</span>
+                    <div class="premium-actions">
+                      <button mat-flat-button class="gradient-btn" type="submit" [disabled]="isLoading">
+                        @if (isLoading) {
+                          <mat-spinner diameter="20"></mat-spinner>
+                        }
+                        @if (!isLoading) {
+                          <span>{{ 'SETTINGS.SAVE_PROFILE' | translate }}</span>
+                        }
                       </button>
                     </div>
                   </form>
-                </div>
-              </mat-card-content>
-            </mat-card>
-          </div>
+                </mat-card-content>
+              </mat-card>
+            </div>
+          }
+
+          <!-- Security Section -->
+          @if (activeSection === 'security') {
+            <div class="section-card-wrapper animate-slide-up">
+              <mat-card class="premium-card narrow-on-desktop">
+                <mat-card-header class="custom-card-header">
+                  <div class="icon-circle security-grad">
+                    <mat-icon>lock</mat-icon>
+                  </div>
+                  <div class="header-text-group">
+                    <mat-card-title>{{ 'SETTINGS.CHANGE_PASSWORD' | translate }}</mat-card-title>
+                    <mat-card-subtitle>{{ 'SETTINGS.CHANGE_PASSWORD_SUBTITLE' | translate }}</mat-card-subtitle>
+                  </div>
+                </mat-card-header>
+                <mat-card-content>
+                  <form [formGroup]="settingsForm" (ngSubmit)="onSubmit()" class="premium-form">
+                    <mat-form-field appearance="fill" class="glass-field">
+                      <mat-label>{{ 'SETTINGS.CURRENT_PASSWORD' | translate }}</mat-label>
+                      <input matInput formControlName="currentPassword" type="password" [placeholder]="'SETTINGS.CURRENT_PASSWORD_HINT' | translate" />
+                      <mat-icon matSuffix>lock_open</mat-icon>
+                    </mat-form-field>
+                    <mat-form-field appearance="fill" class="glass-field">
+                      <mat-label>{{ 'SETTINGS.NEW_PASSWORD' | translate }}</mat-label>
+                      <input matInput formControlName="newPassword" type="password" />
+                    </mat-form-field>
+                    <mat-form-field appearance="fill" class="glass-field">
+                      <mat-label>{{ 'SETTINGS.CONFIRM_PASSWORD' | translate }}</mat-label>
+                      <input matInput formControlName="confirmPassword" type="password" />
+                    </mat-form-field>
+                    <div class="premium-actions">
+                      <button mat-flat-button class="gradient-btn security-grad" type="submit" [disabled]="isLoading">
+                        {{ 'SETTINGS.UPDATE_SECURITY' | translate }}
+                      </button>
+                    </div>
+                  </form>
+                </mat-card-content>
+              </mat-card>
+            </div>
+          }
+
+          <!-- Empty States -->
+          @if (activeSection === 'orders') {
+            <div class="premium-empty-state animate-slide-up">
+              <div class="empty-art">
+                <mat-icon>shopping_bag</mat-icon>
+              </div>
+              <h2>{{ 'SETTINGS.NO_ORDERS' | translate }}</h2>
+              <p>{{ 'SETTINGS.NO_ORDERS_DESC' | translate }}</p>
+              <button mat-flat-button class="gradient-btn" routerLink="/products">{{ 'SETTINGS.CONTINUE_SHOPPING' | translate }}</button>
+            </div>
+          }
+
+          <!-- Address Section -->
+          @if (activeSection === 'addresses') {
+            <div class="section-card-wrapper animate-slide-up">
+              <mat-card class="premium-card">
+                <mat-card-header class="custom-card-header">
+                  <div class="icon-circle primary-grad">
+                    <mat-icon>location_on</mat-icon>
+                  </div>
+                  <div class="header-text-group">
+                    <mat-card-title>{{ 'SETTINGS.ADDRESSES' | translate }}</mat-card-title>
+                    <mat-card-subtitle>{{ 'SETTINGS.SHIPPING_ADDRESSES' | translate }}</mat-card-subtitle>
+                  </div>
+                </mat-card-header>
+                <mat-card-content>
+                  @if (!isEditingAddress) {
+                    <div>
+                      @if (savedAddresses.length > 0) {
+                        <div class="address-cards" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin-bottom: 24px;">
+                          @for (addr of savedAddresses; track addr) {
+                            <mat-card class="address-card" style="padding: 16px; border-radius: 12px; position: relative;">
+                              <div class="address-card-header" style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                                <mat-icon style="color: var(--mat-sys-primary);">place</mat-icon>
+                                <span style="font-weight: 600; text-transform: uppercase; font-size: 0.9rem;">{{ addr.label }}</span>
+                                <span style="flex-grow: 1;"></span>
+                                <button mat-icon-button (click)="editAddress(addr)" style="color: var(--mat-sys-primary); transform: scale(0.8);"><mat-icon>edit</mat-icon></button>
+                                <button mat-icon-button (click)="deleteAddress(addr.id!)" color="warn" style="transform: scale(0.8);"><mat-icon>delete</mat-icon></button>
+                              </div>
+                              <p style="font-weight: 600; margin: 4px 0;">{{ addr.fullName }}</p>
+                              <p style="opacity: 0.8; font-size: 0.9rem; margin: 2px 0;">{{ addr.neighborhood }} {{ addr.street }} No: {{ addr.buildingNo }} D: {{ addr.apartmentNo }}</p>
+                              <p style="opacity: 0.8; font-size: 0.9rem; margin: 2px 0;">{{ addr.city }} {{ addr.district ? '/ ' + addr.district : '' }}</p>
+                              <p style="opacity: 0.8; font-size: 0.9rem; margin: 2px 0;">{{ addr.phoneNumber }}</p>
+                            </mat-card>
+                          }
+                        </div>
+                      }
+                      @if (savedAddresses.length === 0) {
+                        <div class="premium-empty-state" style="margin-bottom: 24px;">
+                          <div class="empty-art address-color">
+                            <mat-icon>location_away</mat-icon>
+                          </div>
+                          <h2>{{ 'SETTINGS.NO_ADDRESSES' | translate }}</h2>
+                          <p>{{ 'SETTINGS.NO_ADDRESSES_DESC' | translate }}</p>
+                        </div>
+                      }
+                      <button mat-flat-button class="gradient-btn" (click)="addNewAddress()">
+                        <mat-icon>add</mat-icon> {{ 'SETTINGS.ADD_ADDRESS' | translate }}
+                      </button>
+                    </div>
+                  }
+                  @if (isEditingAddress) {
+                    <div class="new-address-form" style="margin-top: 16px;">
+                      <form [formGroup]="addressForm" (ngSubmit)="saveAddress()" class="address-form-grid" style="display: flex; flex-direction: column; gap: 4px;">
+                        <mat-form-field appearance="fill" class="glass-field" style="width: 100%;">
+                          <mat-label>{{ 'CHECKOUT.ADDRESS_LABEL' | translate }}</mat-label>
+                          <input matInput formControlName="label" [placeholder]="'CHECKOUT.ADDRESS_LABEL_HINT' | translate" />
+                          <mat-icon matPrefix>label</mat-icon>
+                        </mat-form-field>
+                        <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                          <mat-form-field appearance="fill" class="glass-field">
+                            <mat-label>{{ 'CHECKOUT.FULL_NAME' | translate }}</mat-label>
+                            <input matInput formControlName="fullName" />
+                          </mat-form-field>
+                          <mat-form-field appearance="fill" class="glass-field">
+                            <mat-label>{{ 'CHECKOUT.PHONE' | translate }}</mat-label>
+                            <input matInput formControlName="phoneNumber" />
+                            <mat-icon matSuffix>phone</mat-icon>
+                          </mat-form-field>
+                        </div>
+                        <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                          <mat-form-field appearance="fill" class="glass-field">
+                            <mat-label>{{ 'CHECKOUT.CITY' | translate }}</mat-label>
+                            <mat-select formControlName="city">
+                              @for (city of cities; track city) {
+                                <mat-option [value]="city">{{ city }}</mat-option>
+                              }
+                            </mat-select>
+                          </mat-form-field>
+                          <mat-form-field appearance="fill" class="glass-field">
+                            <mat-label>{{ 'CHECKOUT.DISTRICT' | translate }}</mat-label>
+                            <input matInput formControlName="district" />
+                          </mat-form-field>
+                        </div>
+                        <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                          <mat-form-field appearance="fill" class="glass-field">
+                            <mat-label>{{ 'CHECKOUT.NEIGHBORHOOD' | translate }}</mat-label>
+                            <input matInput formControlName="neighborhood" />
+                          </mat-form-field>
+                          <mat-form-field appearance="fill" class="glass-field">
+                            <mat-label>{{ 'CHECKOUT.STREET' | translate }}</mat-label>
+                            <input matInput formControlName="street" />
+                          </mat-form-field>
+                        </div>
+                        <div class="form-row three-col" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px;">
+                          <mat-form-field appearance="fill" class="glass-field">
+                            <mat-label>{{ 'CHECKOUT.BUILDING_NO' | translate }}</mat-label>
+                            <input matInput formControlName="buildingNo" />
+                          </mat-form-field>
+                          <mat-form-field appearance="fill" class="glass-field">
+                            <mat-label>{{ 'CHECKOUT.APARTMENT_NO' | translate }}</mat-label>
+                            <input matInput formControlName="apartmentNo" />
+                          </mat-form-field>
+                          <mat-form-field appearance="fill" class="glass-field">
+                            <mat-label>{{ 'CHECKOUT.POSTAL_CODE' | translate }}</mat-label>
+                            <input matInput formControlName="postalCode" />
+                          </mat-form-field>
+                        </div>
+                        <div style="display: flex; gap: 16px; margin-top: 16px;">
+                          <button mat-stroked-button type="button" (click)="cancelEditAddress()">Back</button>
+                          <button mat-flat-button class="gradient-btn" type="submit" [disabled]="isAddressLoading">
+                            @if (isAddressLoading) {
+                              <mat-spinner diameter="20"></mat-spinner>
+                            }
+                            @if (!isAddressLoading) {
+                              <span>Save Address</span>
+                            }
+                          </button>
+                        </div>
+                      </form>
+                    </div>
+                  }
+                </mat-card-content>
+              </mat-card>
+            </div>
+          }
+
+          <!-- Wishlist Section -->
+          @if (activeSection === 'wishlist') {
+            <div class="section-card-wrapper animate-slide-up">
+              <mat-card class="premium-card">
+                <mat-card-header class="custom-card-header">
+                  <div class="icon-circle wishlist-grad">
+                    <mat-icon>favorite</mat-icon>
+                  </div>
+                  <div class="header-text-group">
+                    <mat-card-title>{{ 'WISHLIST.MY_WISHLIST' | translate }}</mat-card-title>
+                    <mat-card-subtitle>{{ 'WISHLIST.SUBTITLE' | translate }}</mat-card-subtitle>
+                  </div>
+                </mat-card-header>
+                <mat-card-content>
+                  @if ((wishlistService.wishlistItems$ | async)?.length === 0) {
+                    <div class="premium-empty-state">
+                      <div class="empty-art wishlist-color">
+                        <mat-icon>favorite_border</mat-icon>
+                      </div>
+                      <h2>{{ 'WISHLIST.EMPTY_TITLE' | translate }}</h2>
+                      <p>{{ 'WISHLIST.EMPTY_DESC' | translate }}</p>
+                      <button mat-flat-button class="gradient-btn" routerLink="/products">{{ 'WISHLIST.BROWSE' | translate }}</button>
+                    </div>
+                  }
+                  @if ((wishlistService.wishlistItems$ | async)?.length! > 0) {
+                    <div class="wishlist-grid">
+                      @for (item of wishlistService.wishlistItems$ | async; track item) {
+                        <mat-card class="wishlist-item-card" appearance="outlined">
+                          <a [routerLink]="['/products', item.productId]" class="wishlist-image-link">
+                            <div class="wishlist-image-container">
+                              <img [src]="item.imageUrl" [alt]="item.name" loading="lazy" class="wishlist-image" />
+                            </div>
+                          </a>
+                          <div class="wishlist-item-body">
+                            <a [routerLink]="['/products', item.productId]" class="wishlist-item-name">{{ item.name }}</a>
+                            <span class="wishlist-item-price">{{ item.unitPrice | currency: 'TRY':'₺' }}</span>
+                            @if (item.unitsInStock > 0) {
+                              <span class="wishlist-item-stock">{{ 'PRODUCT_DETAILS.IN_STOCK' | translate }}</span>
+                            }
+                            @if (item.unitsInStock === 0) {
+                              <span class="wishlist-item-stock out">{{ 'PRODUCT_DETAILS.OUT_OF_STOCK' | translate }}</span>
+                            }
+                          </div>
+                          <div class="wishlist-item-actions">
+                            <button mat-flat-button color="primary" type="button" (click)="addToCartFromWishlist(item)" class="wishlist-cart-btn">
+                              <mat-icon>add_shopping_cart</mat-icon>
+                              {{ 'PRODUCT_LIST.ADD_TO_CART' | translate }}
+                            </button>
+                            <button mat-icon-button type="button" (click)="removeFromWishlist(item.productId)" color="warn"
+                              [matTooltip]="'WISHLIST.REMOVE_TOOLTIP' | translate" class="wishlist-remove-btn">
+                              <mat-icon>delete_outline</mat-icon>
+                            </button>
+                          </div>
+                        </mat-card>
+                      }
+                    </div>
+                  }
+                </mat-card-content>
+              </mat-card>
+            </div>
+          }
         </div>
       </div>
     </mat-sidenav-content>

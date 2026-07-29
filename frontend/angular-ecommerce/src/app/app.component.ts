@@ -7,12 +7,14 @@ import { filter, map, shareReplay, startWith } from 'rxjs';
 import { ThemeService } from './services/theme.service';
 import { AuthService } from './services/auth.service';
 import { CartService } from './services/cart.service';
+import { WishlistService } from './services/wishlist.service';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css'],
+    selector: 'app-root',
+    templateUrl: './app.component.html',
+    styleUrls: ['./app.component.css'],
+    standalone: false
 })
 export class AppComponent {
   @ViewChild(MatSidenav) drawer!: MatSidenav;
@@ -22,6 +24,7 @@ export class AppComponent {
   readonly themeService = inject(ThemeService);
   readonly authService = inject(AuthService);
   private readonly cartService = inject(CartService);
+  readonly wishlistService = inject(WishlistService);
   readonly translate = inject(TranslateService);
 
   isBrowser = false;
@@ -43,7 +46,7 @@ export class AppComponent {
     filter((e) => e instanceof NavigationEnd),
     map((e) => {
       const url = (e as NavigationEnd).urlAfterRedirects;
-      return url.includes('/login') || url.includes('/settings') || url.includes('/checkout');
+      return url.includes('/login') || url.includes('/settings') || url.includes('/checkout') || url.includes('/wishlist');
     }),
     startWith(false),
     shareReplay(1),
@@ -52,7 +55,7 @@ export class AppComponent {
   constructor(@Inject(PLATFORM_ID) private readonly platformId: object) {
     // i18n setup
     this.translate.addLangs(['tr', 'en']);
-    this.translate.setDefaultLang('tr');
+    this.translate.setFallbackLang('tr');
 
     if (isPlatformBrowser(this.platformId)) {
       const savedLang = localStorage.getItem('brookyshop-lang');
@@ -64,10 +67,10 @@ export class AppComponent {
       this.isBrowser = true;
       this.themeService.initThemeFromStorage();
 
-      // Load cart from server if user is logged in
-      const email = this.authService.userEmail$.value;
-      if (email) {
-        this.cartService.loadCartFromServer(email);
+      // Load cart and wishlist from server if user is logged in
+      if (this.authService.hasValidSession()) {
+        this.cartService.loadCartFromServer();
+        this.wishlistService.loadWishlist();
       }
     });
 
@@ -93,7 +96,7 @@ export class AppComponent {
 
   logout(): void {
     this.cartService.clearSync();
+    this.wishlistService.clearWishlist();
     this.authService.logout();
-    this.router.navigate(['/login']);
   }
 }

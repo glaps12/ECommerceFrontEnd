@@ -6,13 +6,14 @@
     [placeholder]="'TOOLBAR.SEARCH_PLACEHOLDER' | translate"
     #q
     (keyup.enter)="doSearch(q.value)" />
-  <button
-    *ngIf="q.value"
-    mat-icon-button
-    type="button"
-    class="clear-btn"
-    (click)="q.value = ''"
-    aria-label="Clear search">
-    <mat-icon>close</mat-icon>
-  </button>
-</div>
+    @if (q.value) {
+      <button
+        mat-icon-button
+        type="button"
+        class="clear-btn"
+        (click)="q.value = ''"
+        aria-label="Clear search">
+        <mat-icon>close</mat-icon>
+      </button>
+    }
+  </div>

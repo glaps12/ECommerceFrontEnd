@@ -1,11 +1,11 @@
-import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
 import { CartItem } from '../common/cart-item';
 import { Product } from '../common/product';
+import { API_BASE_URL } from './api.config';
 
 @Injectable({ providedIn: 'root' })
 export class CartService {
@@ -13,20 +13,19 @@ export class CartService {
   totalQuantity = new BehaviorSubject<number>(0);
   totalPrice = new BehaviorSubject<number>(0);
 
-  private readonly apiUrl = 'http://localhost:8080/api/cart';
-  private syncEmail: string | null = null;
+  private readonly apiUrl = `${inject(API_BASE_URL)}/cart`;
+  private syncEnabled = false;
 
   constructor(
     private readonly http: HttpClient,
     private readonly snackBar: MatSnackBar,
     private readonly translate: TranslateService,
-    @Inject(PLATFORM_ID) private readonly platformId: object
   ) {}
 
   /** Call after login to load the user's persisted cart and merge with local items */
-  loadCartFromServer(email: string): void {
-    this.syncEmail = email;
-    this.http.get<any>(`${this.apiUrl}?email=${email}`).subscribe({
+  loadCartFromServer(): void {
+    this.syncEnabled = true;
+    this.http.get<CartResponse>(this.apiUrl).subscribe({
       next: (res) => {
         if (res.items && res.items.length > 0) {
           // Merge server items into local cart
@@ -45,7 +44,7 @@ export class CartService {
                 serverItem.unitPrice,
                 serverItem.imageUrl,
                 true,
-                999,
+                serverItem.unitsInStock,
                 new Date(),
                 new Date()
               );
@@ -65,30 +64,36 @@ export class CartService {
 
   /** Sync current local cart state to the server */
   syncCartToServer(): void {
-    if (!this.syncEmail) return;
+    if (!this.syncEnabled) return;
 
     const items = this.cartItems.map(ci => ({
       productId: ci.id,
       quantity: ci.quantity
     }));
 
-    this.http.post(`${this.apiUrl}/sync?email=${this.syncEmail}`, { items }).subscribe({
+    this.http.post(`${this.apiUrl}/sync`, { items }).subscribe({
       error: (err) => console.error('Failed to sync cart to server', err)
     });
   }
 
   /** Clear the sync email on logout */
   clearSync(): void {
-    this.syncEmail = null;
-  }
-
-  /** Set email for syncing (e.g., when user is already logged in on page load) */
-  setSyncEmail(email: string): void {
-    this.syncEmail = email;
+    this.syncEnabled = false;
   }
 
   addToCart(product: Product) {
     const existingCartItem = this.cartItems.find(item => item.id === product.id);
+    const currentQuantity = existingCartItem?.quantity ?? 0;
+
+    if (!product.active || product.unitsInStock <= currentQuantity) {
+      this.snackBar.open(this.translate.instant('CART.STOCK_LIMIT'), 'OK', {
+        duration: 3000,
+        panelClass: ['error-snackbar'],
+        horizontalPosition: 'center',
+        verticalPosition: 'top'
+      });
+      return;
+    }
 
     if (existingCartItem) {
       existingCartItem.quantity++;
@@ -134,8 +139,8 @@ export class CartService {
     this.totalPrice.next(0);
 
     // Also clear on server
-    if (this.syncEmail) {
-      this.http.delete(`${this.apiUrl}/clear?email=${this.syncEmail}`).subscribe({
+    if (this.syncEnabled) {
+      this.http.delete(`${this.apiUrl}/clear`).subscribe({
         error: (err) => console.error('Failed to clear cart on server', err)
       });
     }
@@ -148,4 +153,15 @@ export class CartService {
     this.totalPrice.next(totalPrice);
     this.totalQuantity.next(totalQuantity);
   }
+}
+
+interface CartResponse {
+  items: Array<{
+    productId: number;
+    quantity: number;
+    name: string;
+    unitPrice: number;
+    imageUrl: string;
+    unitsInStock: number;
+  }>;
 }

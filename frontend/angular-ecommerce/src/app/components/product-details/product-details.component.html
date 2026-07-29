@@ -1,4 +1,4 @@
-<ng-container *ngIf="product as p">
+@if (product; as p) {
   <mat-card class="detail-card" appearance="outlined">
     <div class="detail-grid">
       <div class="detail-image-wrap">
@@ -10,26 +10,36 @@
         <h1 class="detail-title">{{ p.name }}</h1>
         <p class="detail-sku">{{ 'PRODUCT_DETAILS.SKU' | translate }}: {{ p.sku }}</p>
         <p class="detail-price">{{ p.unitPrice | currency: "TRY":"₺" }}</p>
-
-        <div class="detail-stock" *ngIf="p.unitsInStock > 0">
-          <mat-icon class="stock-icon">check_circle</mat-icon>
-          <span>{{ 'PRODUCT_DETAILS.IN_STOCK' | translate }} ({{ p.unitsInStock }} {{ 'PRODUCT_DETAILS.UNITS_LEFT' | translate }})</span>
+        @if (p.unitsInStock > 0) {
+          <div class="detail-stock">
+            <mat-icon class="stock-icon">check_circle</mat-icon>
+            <span>{{ 'PRODUCT_DETAILS.IN_STOCK' | translate }} ({{ p.unitsInStock }} {{ 'PRODUCT_DETAILS.UNITS_LEFT' | translate }})</span>
+          </div>
+        }
+        @if (p.unitsInStock === 0) {
+          <div class="detail-stock out">
+            <mat-icon class="stock-icon">cancel</mat-icon>
+            <span>{{ 'PRODUCT_DETAILS.OUT_OF_STOCK' | translate }}</span>
+          </div>
+        }
+        <div class="detail-action-row">
+          <button mat-flat-button color="primary" type="button" (click)="addToCart(p)" class="detail-add-btn">
+            <mat-icon>add_shopping_cart</mat-icon>
+            {{ 'PRODUCT_DETAILS.ADD_TO_CART' | translate }}
+          </button>
+          @if (isLoggedIn) {
+            <button mat-stroked-button type="button" (click)="toggleWishlist(p)"
+              class="detail-wishlist-btn"
+              [class.wishlisted]="isWishlisted(p.id)"
+              [matTooltip]="isWishlisted(p.id) ? ('WISHLIST.REMOVE_TOOLTIP' | translate) : ('WISHLIST.ADD_TOOLTIP' | translate)">
+              <mat-icon>{{ isWishlisted(p.id) ? 'favorite' : 'favorite_border' }}</mat-icon>
+              {{ isWishlisted(p.id) ? ('WISHLIST.WISHLISTED' | translate) : ('WISHLIST.ADD' | translate) }}
+            </button>
+          }
         </div>
-        <div class="detail-stock out" *ngIf="p.unitsInStock === 0">
-          <mat-icon class="stock-icon">cancel</mat-icon>
-          <span>{{ 'PRODUCT_DETAILS.OUT_OF_STOCK' | translate }}</span>
-        </div>
-
-        <button mat-flat-button color="primary" type="button" (click)="addToCart(p)" class="detail-add-btn">
-          <mat-icon>add_shopping_cart</mat-icon>
-          {{ 'PRODUCT_DETAILS.ADD_TO_CART' | translate }}
-        </button>
-
         <mat-divider class="detail-divider"></mat-divider>
-
         <h3 class="detail-subhead">Description</h3>
         <p class="detail-desc">{{ p.description }}</p>
-
         <button mat-stroked-button type="button" routerLink="/products" class="back-btn">
           <mat-icon>arrow_back</mat-icon>
           {{ 'PRODUCT_DETAILS.BACK' | translate }}
@@ -37,4 +47,4 @@
       </div>
     </div>
   </mat-card>
-</ng-container>
+}

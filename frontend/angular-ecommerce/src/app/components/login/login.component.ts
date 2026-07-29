@@ -1,52 +1,56 @@
 import { Component, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { trigger, transition, style, animate, query, stagger } from '@angular/animations';
 import { AuthService } from '../../services/auth.service';
 import { CartService } from '../../services/cart.service';
+import { WishlistService } from '../../services/wishlist.service';
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css'],
-  animations: [
-    trigger('slideInLeft', [
-      transition(':enter', [
-        style({ transform: 'translateX(-100%)', opacity: 0 }),
-        animate('600ms cubic-bezier(0.25, 0.8, 0.25, 1)', style({ transform: 'translateX(0)', opacity: 1 })),
-      ]),
-    ]),
-    trigger('slideInRight', [
-      transition(':enter', [
-        style({ transform: 'translateX(100%)', opacity: 0 }),
-        animate('600ms cubic-bezier(0.25, 0.8, 0.25, 1)', style({ transform: 'translateX(0)', opacity: 1 })),
-      ]),
-    ]),
-    trigger('fadeInUp', [
-      transition(':enter', [
-        style({ transform: 'translateY(30px)', opacity: 0 }),
-        animate('500ms 300ms cubic-bezier(0.25, 0.8, 0.25, 1)', style({ transform: 'translateY(0)', opacity: 1 })),
-      ]),
-    ]),
-    trigger('staggerIn', [
-      transition(':enter', [
-        query(':enter', [
-          style({ transform: 'translateY(20px)', opacity: 0 }),
-          stagger('80ms', [
-            animate('400ms cubic-bezier(0.25, 0.8, 0.25, 1)', style({ transform: 'translateY(0)', opacity: 1 })),
-          ]),
-        ], { optional: true }),
-      ]),
-    ]),
-  ],
+    selector: 'app-login',
+    templateUrl: './login.component.html',
+    styleUrls: ['./login.component.css'],
+    animations: [
+        trigger('slideInLeft', [
+            transition(':enter', [
+                style({ transform: 'translateX(-100%)', opacity: 0 }),
+                animate('600ms cubic-bezier(0.25, 0.8, 0.25, 1)', style({ transform: 'translateX(0)', opacity: 1 })),
+            ]),
+        ]),
+        trigger('slideInRight', [
+            transition(':enter', [
+                style({ transform: 'translateX(100%)', opacity: 0 }),
+                animate('600ms cubic-bezier(0.25, 0.8, 0.25, 1)', style({ transform: 'translateX(0)', opacity: 1 })),
+            ]),
+        ]),
+        trigger('fadeInUp', [
+            transition(':enter', [
+                style({ transform: 'translateY(30px)', opacity: 0 }),
+                animate('500ms 300ms cubic-bezier(0.25, 0.8, 0.25, 1)', style({ transform: 'translateY(0)', opacity: 1 })),
+            ]),
+        ]),
+        trigger('staggerIn', [
+            transition(':enter', [
+                query(':enter', [
+                    style({ transform: 'translateY(20px)', opacity: 0 }),
+                    stagger('80ms', [
+                        animate('400ms cubic-bezier(0.25, 0.8, 0.25, 1)', style({ transform: 'translateY(0)', opacity: 1 })),
+                    ]),
+                ], { optional: true }),
+            ]),
+        ]),
+    ],
+    standalone: false
 })
 export class LoginComponent {
   private readonly fb = inject(FormBuilder);
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
   private readonly snackBar = inject(MatSnackBar);
   private readonly cartService = inject(CartService);
+  private readonly wishlistService = inject(WishlistService);
 
   isSignup = false;
   isVerification = false;
@@ -58,12 +62,12 @@ export class LoginComponent {
 
   loginForm: FormGroup = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required, Validators.minLength(6)]],
+    password: ['', [Validators.required, Validators.minLength(8)]],
   });
 
   signupForm: FormGroup = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required, Validators.minLength(6)]],
+    password: ['', [Validators.required, Validators.minLength(8)]],
     confirmPassword: ['', [Validators.required]],
   });
 
@@ -170,11 +174,13 @@ export class LoginComponent {
         next: (res) => {
           this.isLoading = false;
           if (res.success) {
-            // Load cart from server after login
+            // Load cart and wishlist from server after login
             if (res.email) {
-              this.cartService.loadCartFromServer(res.email);
+              this.cartService.loadCartFromServer();
+              this.wishlistService.loadWishlist();
             }
-            this.router.navigate(['/products']);
+            const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
+            this.router.navigateByUrl(returnUrl?.startsWith('/') ? returnUrl : '/products');
           } else {
             this.errorMessage = res.message;
             this.snackBar.open(res.message, 'OK', { duration: 4000, panelClass: ['error-snackbar'] });

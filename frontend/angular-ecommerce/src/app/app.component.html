@@ -1,12 +1,9 @@
 <!-- Full-screen login page (no shell) -->
-<ng-container *ngIf="isLoginPage$ | async; else appShell">
+@if (isLoginPage$ | async) {
   <router-outlet></router-outlet>
-</ng-container>
-
-<!-- Normal app shell for all other pages -->
-<ng-template #appShell>
+} @else {
   <mat-sidenav-container class="app-shell">
-    <mat-sidenav #drawer [mode]="(isHandset$ | async) ? 'over' : 'side'" 
+    <mat-sidenav #drawer [mode]="(isHandset$ | async) ? 'over' : 'side'"
       [opened]="(isHandset$ | async) === false && (isFullWidthPage$ | async) === false"
       class="app-sidenav">
       <div class="sidenav-wrapper">
@@ -19,28 +16,43 @@
         </div>
       </div>
     </mat-sidenav>
-
     <mat-sidenav-content>
       <mat-toolbar class="app-toolbar">
-        <button mat-icon-button type="button" class="menu-btn" (click)="drawer.toggle()" *ngIf="isHandset$ | async"
-          [matTooltip]="'SIDEBAR.CATEGORIES' | translate" aria-label="Open categories menu">
-          <mat-icon>menu</mat-icon>
-        </button>
-
+        @if (isHandset$ | async) {
+          <button mat-icon-button type="button" class="menu-btn" (click)="drawer.toggle()"
+            [matTooltip]="'SIDEBAR.CATEGORIES' | translate" aria-label="Open categories menu">
+            <mat-icon>menu</mat-icon>
+          </button>
+        }
         <!-- Logo for non-handset (optional, but requested implicitly by 'icons everywhere') -->
-        <app-search class="toolbar-search" *ngIf="!(isFullWidthPage$ | async)"></app-search>
-        
-        <div class="toolbar-brand-clickable" *ngIf="isFullWidthPage$ | async" routerLink="/products" 
-          [matTooltip]="'CART.CONTINUE_SHOPPING' | translate" [matTooltipShowDelay]="500">
-          <mat-icon class="brand-icon">storefront</mat-icon>
-          <span class="brand-text" *ngIf="!(isHandset$ | async)">{{ 'SIDEBAR.BRAND' | translate }}</span>
-        </div>
-        
+        @if (!(isFullWidthPage$ | async)) {
+          <app-search class="toolbar-search"></app-search>
+        }
+        @if (isFullWidthPage$ | async) {
+          <div class="toolbar-brand-clickable" routerLink="/products"
+            [matTooltip]="'CART.CONTINUE_SHOPPING' | translate" [matTooltipShowDelay]="500">
+            <mat-icon class="brand-icon">storefront</mat-icon>
+            @if (!(isHandset$ | async)) {
+              <span class="brand-text">{{ 'SIDEBAR.BRAND' | translate }}</span>
+            }
+          </div>
+        }
         <span class="toolbar-spacer"></span>
-
         <div class="toolbar-actions">
           <app-cart-status [matTooltip]="'TOOLBAR.VIEW_CART' | translate" [matTooltipShowDelay]="500"></app-cart-status>
-
+          <!-- Wishlist icon (logged-in only) -->
+          @if (authService.isLoggedIn$ | async) {
+            <button mat-icon-button type="button" routerLink="/settings"
+              [queryParams]="{section: 'wishlist'}"
+              [matTooltip]="'WISHLIST.MY_WISHLIST' | translate" [matTooltipShowDelay]="500"
+              class="wishlist-toolbar-btn" aria-label="View wishlist">
+              <mat-icon [matBadge]="(wishlistService.wishlistCount$ | async) || null"
+                matBadgeColor="warn" matBadgeSize="small"
+                [matBadgeHidden]="(wishlistService.wishlistCount$ | async) === 0">
+                favorite
+              </mat-icon>
+            </button>
+          }
           <!-- Language toggle -->
           <button mat-button type="button" (click)="switchLanguage()"
             [matTooltip]="'TOOLBAR.LANGUAGE' | translate"
@@ -48,16 +60,14 @@
             class="lang-toggle-btn">
             <span class="lang-label">{{ currentLang === 'tr' ? 'EN' : 'TR' }}</span>
           </button>
-
           <button mat-icon-button type="button" (click)="toggleTheme()"
             [matTooltip]="(themeService.dark$ | async) ? ('TOOLBAR.LIGHT_MODE' | translate) : ('TOOLBAR.DARK_MODE' | translate)"
             [matTooltipShowDelay]="1000"
             class="theme-toggle-btn">
             <mat-icon>{{ (themeService.dark$ | async) ? 'light_mode' : 'dark_mode' }}</mat-icon>
           </button>
-
-          <ng-container *ngIf="authService.isLoggedIn$ | async; else loginBtnTpl">
-            <button mat-icon-button type="button" routerLink="/settings" class="user-btn" 
+          @if (authService.isLoggedIn$ | async) {
+            <button mat-icon-button type="button" routerLink="/settings" class="user-btn"
               [matTooltip]="'TOOLBAR.ACCOUNT' | translate"
               [matTooltipShowDelay]="2000"
               aria-label="User settings">
@@ -67,21 +77,17 @@
               [matTooltip]="'TOOLBAR.LOGOUT' | translate" [matTooltipShowDelay]="1000" aria-label="Log out">
               <mat-icon>logout</mat-icon>
             </button>
-          </ng-container>
-
-          <ng-template #loginBtnTpl>
-            <button mat-icon-button type="button" routerLink="/login" 
+          } @else {
+            <button mat-icon-button type="button" routerLink="/login"
               [matTooltip]="'TOOLBAR.LOGIN' | translate" [matTooltipShowDelay]="1000" aria-label="Log in" class="login-btn">
               <mat-icon>login</mat-icon>
             </button>
-          </ng-template>
+          }
         </div>
       </mat-toolbar>
-
       <main class="router-outlet-wrap">
         <router-outlet></router-outlet>
       </main>
-
       <footer class="app-footer">
         <div class="footer-inner">
           <span class="footer-brand">{{ 'FOOTER.COPYRIGHT' | translate }}</span>
@@ -94,4 +100,6 @@
       </footer>
     </mat-sidenav-content>
   </mat-sidenav-container>
-</ng-template>
+}
+
+<!-- Normal app shell for all other pages -->

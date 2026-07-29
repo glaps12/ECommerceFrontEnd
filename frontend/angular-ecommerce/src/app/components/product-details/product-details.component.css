@@ -105,6 +105,39 @@
   font-size: 0.95rem;
 }
 
+/* ── Wishlist on Details ─────────────────────────────── */
+.detail-action-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.detail-wishlist-btn {
+  border-radius: 12px !important;
+  height: 44px;
+  gap: 6px;
+  font-weight: 500;
+  font-size: 0.95rem;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.detail-wishlist-btn.wishlisted {
+  color: #e53935 !important;
+  border-color: #e53935 !important;
+}
+
+.detail-wishlist-btn.wishlisted mat-icon {
+  color: #e53935;
+  animation: heartPop 0.35s ease;
+}
+
+@keyframes heartPop {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.35); }
+  100% { transform: scale(1); }
+}
+
 .detail-divider {
   margin: 24px 0;
 }

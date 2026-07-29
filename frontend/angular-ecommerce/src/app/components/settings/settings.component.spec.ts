@@ -6,6 +6,7 @@ import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { SharedMaterialModule } from '../../shared-material.module';
 import { SettingsComponent } from './settings.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('SettingsComponent', () => {
   let component: SettingsComponent;
@@ -18,7 +19,8 @@ describe('SettingsComponent', () => {
         RouterTestingModule,
         ReactiveFormsModule,
         NoopAnimationsModule,
-        SharedMaterialModule
+        SharedMaterialModule,
+        TranslateModule.forRoot()
       ],
       declarations: [SettingsComponent],
       schemas: [NO_ERRORS_SCHEMA]
