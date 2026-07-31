@@ -62,15 +62,13 @@
           <form [formGroup]="verifyForm" (ngSubmit)="onSubmit()" class="auth-form">
             <mat-form-field appearance="outline" class="form-field">
               <mat-label>Verification Code</mat-label>
-              <input matInput formControlName="code" type="text" maxlength="6" autocomplete="off" />
+              <input matInput formControlName="code" type="text" inputmode="numeric" pattern="[0-9]*"
+                maxlength="6" autocomplete="one-time-code" />
               <mat-icon matPrefix>verified</mat-icon>
               @if (verifyForm.get('code')?.hasError('required')) {
                 <mat-error>Code is required.</mat-error>
               }
-              @if (verifyForm.get('code')?.hasError('minlength')) {
-                <mat-error>Code must be exactly 6 digits.</mat-error>
-              }
-              @if (verifyForm.get('code')?.hasError('maxlength')) {
+              @if (verifyForm.get('code')?.hasError('pattern')) {
                 <mat-error>Code must be exactly 6 digits.</mat-error>
               }
             </mat-form-field>
@@ -81,6 +79,9 @@
               @if (!isLoading) {
                 <span>Verify Email</span>
               }
+            </button>
+            <button mat-button type="button" [disabled]="isLoading" (click)="resendVerificationCode()">
+              Resend code
             </button>
           </form>
         }
