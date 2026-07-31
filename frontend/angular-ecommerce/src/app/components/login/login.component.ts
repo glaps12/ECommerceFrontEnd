@@ -72,12 +72,33 @@ export class LoginComponent {
   });
 
   verifyForm: FormGroup = this.fb.group({
-    code: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(6)]],
+    code: ['', [Validators.required, Validators.pattern(/^\d{6}$/)]],
   });
 
   get activeForm(): FormGroup {
     if (this.isVerification) return this.verifyForm;
     return this.isSignup ? this.signupForm : this.loginForm;
+  }
+
+  resendVerificationCode(): void {
+    if (!this.pendingEmail || this.isLoading) return;
+
+    this.errorMessage = '';
+    this.successMessage = '';
+    this.isLoading = true;
+    this.authService.resendVerification(this.pendingEmail).subscribe({
+      next: (res) => {
+        this.isLoading = false;
+        this.successMessage = res.message;
+        this.snackBar.open(res.message, 'OK', { duration: 5000, panelClass: ['success-snackbar'] });
+      },
+      error: (err) => {
+        this.isLoading = false;
+        const msg = err.error?.message || 'The code could not be resent. Please try again.';
+        this.errorMessage = msg;
+        this.snackBar.open(msg, 'OK', { duration: 5000, panelClass: ['error-snackbar'] });
+      },
+    });
   }
 
   toggleMode(): void {
@@ -144,7 +165,7 @@ export class LoginComponent {
         next: (res) => {
           this.isLoading = false;
           if (res.success) {
-            this.successMessage = 'Account created! Please check your email for the verification code.';
+            this.successMessage = res.message;
             this.snackBar.open(this.successMessage, 'OK', { duration: 5000, panelClass: ['success-snackbar'] });
             this.isVerification = true;
             this.pendingEmail = this.signupForm.value.email;

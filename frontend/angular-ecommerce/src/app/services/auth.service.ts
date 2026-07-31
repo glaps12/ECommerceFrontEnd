@@ -99,6 +99,10 @@ export class AuthService {
     return this.http.post<AuthResponse>(`${this.apiUrl}/verify-email`, data);
   }
 
+  resendVerification(email: string): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.apiUrl}/resend-verification`, { email });
+  }
+
   hasValidSession(): boolean {
     const stored = readStoredAuth();
     if (!stored) {
